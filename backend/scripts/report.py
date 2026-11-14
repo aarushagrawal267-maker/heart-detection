@@ -80,10 +80,32 @@ def main() -> None:
             for c, row in zip(m["classes"], m["confusion_matrix"]):
                 L.append(f"| **{c}** | " + " | ".join(f"{v:,}" for v in row) + " |")
             L.append("")
+            if e.kind == "cnn":
+                rows = [r for r in ev.per_subject
+                        if (r.get("S_support") or 0) >= 20 or (r.get("F_support") or 0) >= 20]
+                L += ["Per-patient sensitivity for the minority classes (subjects with ≥20 S or F beats):", "",
+                      "| Subject | S beats | S sensitivity | F beats | F sensitivity | V beats | V sensitivity |",
+                      "|---|---|---|---|---|---|---|"]
+                for r in rows:
+                    L.append(f"| {r['subject']} | {r['S_support']} | {p(r['S_recall'])} | {r['F_support']} | "
+                             f"{p(r['F_recall'])} | {r['V_support']} | {p(r['V_recall'])} |")
+                s_rows = [r for r in ev.per_subject if r.get("S_support")]
+                top = max(s_rows, key=lambda r: r["S_support"])
+                tp_all = sum(round(r["S_recall"] * r["S_support"]) for r in s_rows)
+                tp_top = round(top["S_recall"] * top["S_support"])
+                rest = sum(r["S_support"] for r in s_rows) - top["S_support"]
+                L += ["", f"Subject {top['subject']} contributes {top['S_support']:,} of the "
+                      f"{sum(r['S_support'] for r in s_rows):,} test S beats, and only {p(top['S_recall'])} of them are detected. "
+                      f"Excluding that one subject, S sensitivity is {p((tp_all - tp_top) / rest)} "
+                      f"({tp_all - tp_top} of {rest}). The overall S figure is therefore dominated by a single patient.", ""]
         log = s.query(db.TestAccess).order_by(db.TestAccess.timestamp).all()
         L += ["## 4. Test-set access log", "", "| When (UTC) | Experiment | Purpose |", "|---|---|---|"]
         L += [f"| {t.timestamp:%Y-%m-%d %H:%M} | `{t.experiment_id}` | {t.purpose} |" for t in log] or ["| — | — | — |"]
         L += ["", "## 5. Interpretation", "",
+              "- Fold-level CV macro-F1 averages over the classes present in each fold. Fold 1 (record 209) has only N and S beats "
+              "(plus one V), so its score is high and lifts every candidate's mean equally. The CV means are for comparing candidates, not absolute scores.",
+              "- The three CV candidates differ by less than one standard deviation across folds, so the selection is a weak preference. "
+              "The morphology-only ablation scored S F1 = 0 on 4 of 5 folds, showing that RR-interval (prematurity) information drives S detection.",
               "- Accuracy is dominated by N beats; macro-F1 and per-class sensitivity and precision are the meaningful figures.",
               "- S and F beats are the hard classes in inter-patient evaluation, as in the published literature. Test S beats are "
               "dominated by one subject (record 232), and training F beats by one subject (record 208).",
