@@ -1,0 +1,943 @@
+{
+ "format": "qrs-atlas-experiment-v1",
+ "experiment": {
+  "id": "20261114-194144-e842",
+  "name": "Majority-class baseline",
+  "kind": "baseline",
+  "model_name": "majority",
+  "status": "completed",
+  "config": {
+   "model": "majority",
+   "classes": [
+    "N",
+    "S",
+    "V",
+    "F"
+   ],
+   "val_fold": 2,
+   "seed": 42
+  },
+  "pipeline": {
+   "version": 1,
+   "lead": "MLII",
+   "baseline_median_ms": [
+    200,
+    600
+   ],
+   "lowpass_hz": 45.0,
+   "lowpass_order": 4,
+   "store_pre": 128,
+   "store_post": 192,
+   "rr_local_beats": 10
+  },
+  "pipeline_hash": "4d7fc55837a1",
+  "dataset_version": "1.0.0",
+  "split": {
+   "split_name": "subject-corrected-DS1-DS2",
+   "split_version": 1,
+   "train_records": [
+    "101",
+    "106",
+    "108",
+    "109",
+    "112",
+    "114",
+    "115",
+    "118",
+    "119",
+    "122",
+    "207",
+    "208",
+    "209",
+    "215",
+    "220",
+    "223",
+    "230"
+   ],
+   "validation_records": [
+    "116",
+    "124",
+    "201",
+    "202",
+    "203",
+    "205"
+   ],
+   "test_records": [
+    "100",
+    "103",
+    "105",
+    "111",
+    "113",
+    "117",
+    "121",
+    "123",
+    "200",
+    "210",
+    "212",
+    "213",
+    "214",
+    "219",
+    "221",
+    "222",
+    "228",
+    "231",
+    "232",
+    "233",
+    "234"
+   ],
+   "excluded_records": [
+    "102",
+    "104",
+    "107",
+    "217"
+   ],
+   "train_subjects": [
+    "S101",
+    "S106",
+    "S108",
+    "S109",
+    "S112",
+    "S114",
+    "S115",
+    "S118",
+    "S119",
+    "S122",
+    "S207",
+    "S208",
+    "S209",
+    "S215",
+    "S220",
+    "S223",
+    "S230"
+   ],
+   "validation_subjects": [
+    "S116",
+    "S124",
+    "S201_202",
+    "S203",
+    "S205"
+   ],
+   "n_train_beats": 39367,
+   "n_validation_beats": 13757
+  },
+  "architecture": [
+   {
+    "layer": "Majority class (always predicts N) - shows the accuracy trap"
+   }
+  ],
+  "n_params": null,
+  "environment": {
+   "python": "3.13.18",
+   "torch": "2.15.0+cpu",
+   "numpy": "2.5.4",
+   "sklearn": "1.9.1",
+   "platform": "Linux-6.18.44-fc-v470-x86_64-with-glibc2.39",
+   "device": "cpu",
+   "cuda": null,
+   "threads": 4,
+   "git_commit": null
+  },
+  "checkpoint_path": "models/20261114-194144-e842/model.joblib",
+  "created_at": "2026-11-14T19:41:44.039057",
+  "started_at": "2026-11-14T19:41:46.422622",
+  "finished_at": "2026-11-14T19:41:49.317906",
+  "duration_s": 2.9,
+  "current_epoch": 0,
+  "total_epochs": 0,
+  "summary": {
+   "val_macro_f1": 0.23931,
+   "val_accuracy": 0.91801,
+   "val_per_class_f1": {
+    "N": 0.95725,
+    "S": 0.0,
+    "V": 0.0,
+    "F": 0.0
+   },
+   "train_macro_f1": 0.23629
+  },
+  "cv_results": null,
+  "notes": ""
+ },
+ "epochs": [],
+ "evaluations": [
+  {
+   "partition": "train",
+   "metrics": {
+    "classes": [
+     "N",
+     "S",
+     "V",
+     "F"
+    ],
+    "n": 39367,
+    "accuracy": 0.89603,
+    "macro_f1": 0.23629,
+    "weighted_f1": 0.8469,
+    "macro_recall": 0.25,
+    "confusion_matrix": [
+     [
+      35274,
+      0,
+      0,
+      0
+     ],
+     [
+      779,
+      0,
+      0,
+      0
+     ],
+     [
+      2919,
+      0,
+      0,
+      0
+     ],
+     [
+      395,
+      0,
+      0,
+      0
+     ]
+    ],
+    "per_class": {
+     "N": {
+      "support": 35274,
+      "predicted": 39367,
+      "precision": 0.89603,
+      "recall": 1.0,
+      "sensitivity": 1.0,
+      "specificity": 0.0,
+      "fpr": 1.0,
+      "f1": 0.94516
+     },
+     "S": {
+      "support": 779,
+      "predicted": 0,
+      "precision": null,
+      "recall": 0.0,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "fpr": 0.0,
+      "f1": 0.0
+     },
+     "V": {
+      "support": 2919,
+      "predicted": 0,
+      "precision": null,
+      "recall": 0.0,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "fpr": 0.0,
+      "f1": 0.0
+     },
+     "F": {
+      "support": 395,
+      "predicted": 0,
+      "precision": null,
+      "recall": 0.0,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "fpr": 0.0,
+      "f1": 0.0
+     }
+    },
+    "roc": {
+     "N": {
+      "auc": 0.5,
+      "points": [
+       [
+        0.0,
+        0.0
+       ],
+       [
+        1.0,
+        1.0
+       ]
+      ]
+     },
+     "S": {
+      "auc": 0.5,
+      "points": [
+       [
+        0.0,
+        0.0
+       ],
+       [
+        1.0,
+        1.0
+       ]
+      ]
+     },
+     "V": {
+      "auc": 0.5,
+      "points": [
+       [
+        0.0,
+        0.0
+       ],
+       [
+        1.0,
+        1.0
+       ]
+      ]
+     },
+     "F": {
+      "auc": 0.5,
+      "points": [
+       [
+        0.0,
+        0.0
+       ],
+       [
+        1.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "pr": {
+     "N": {
+      "ap": 0.89603,
+      "prevalence": 0.89603,
+      "points": [
+       [
+        0.0,
+        1.0
+       ],
+       [
+        1.0,
+        0.89603
+       ]
+      ],
+      "auc": 0.94801
+     },
+     "S": {
+      "ap": 0.01979,
+      "prevalence": 0.01979,
+      "points": [
+       [
+        0.0,
+        1.0
+       ],
+       [
+        1.0,
+        0.01979
+       ]
+      ],
+      "auc": 0.50989
+     },
+     "V": {
+      "ap": 0.07415,
+      "prevalence": 0.07415,
+      "points": [
+       [
+        0.0,
+        1.0
+       ],
+       [
+        1.0,
+        0.07415
+       ]
+      ],
+      "auc": 0.53707
+     },
+     "F": {
+      "ap": 0.01003,
+      "prevalence": 0.01003,
+      "points": [
+       [
+        0.0,
+        1.0
+       ],
+       [
+        1.0,
+        0.01003
+       ]
+      ],
+      "auc": 0.50502
+     }
+    },
+    "macro_roc_auc": 0.5
+   },
+   "per_subject": [
+    {
+     "subject": "S101",
+     "n": 1862,
+     "accuracy": 0.9984,
+     "N_support": 1859,
+     "N_recall": 1.0,
+     "S_support": 3,
+     "S_recall": 0.0,
+     "V_support": 0,
+     "V_recall": null,
+     "F_support": 0,
+     "F_recall": null
+    },
+    {
+     "subject": "S106",
+     "n": 2027,
+     "accuracy": 0.7435,
+     "N_support": 1507,
+     "N_recall": 1.0,
+     "S_support": 0,
+     "S_recall": null,
+     "V_support": 520,
+     "V_recall": 0.0,
+     "F_support": 0,
+     "F_recall": null
+    },
+    {
+     "subject": "S108",
+     "n": 1762,
+     "accuracy": 0.9869,
+     "N_support": 1739,
+     "N_recall": 1.0,
+     "S_support": 4,
+     "S_recall": 0.0,
+     "V_support": 17,
+     "V_recall": 0.0,
+     "F_support": 2,
+     "F_recall": 0.0
+    },
+    {
+     "subject": "S109",
+     "n": 2530,
+     "accuracy": 0.9842,
+     "N_support": 2490,
+     "N_recall": 1.0,
+     "S_support": 0,
+     "S_recall": null,
+     "V_support": 38,
+     "V_recall": 0.0,
+     "F_support": 2,
+     "F_recall": 0.0
+    },
+    {
+     "subject": "S112",
+     "n": 2537,
+     "accuracy": 0.9992,
+     "N_support": 2535,
+     "N_recall": 1.0,
+     "S_support": 2,
+     "S_recall": 0.0,
+     "V_support": 0,
+     "V_recall": null,
+     "F_support": 0,
+     "F_recall": null
+    },
+    {
+     "subject": "S114",
+     "n": 1879,
+     "accuracy": 0.9686,
+     "N_support": 1820,
+     "N_recall": 1.0,
+     "S_support": 12,
+     "S_recall": 0.0,
+     "V_support": 43,
+     "V_recall": 0.0,
+     "F_support": 4,
+     "F_recall": 0.0
+    },
+    {
+     "subject": "S115",
+     "n": 1952,
+     "accuracy": 1.0,
+     "N_support": 1952,
+     "N_recall": 1.0,
+     "S_support": 0,
+     "S_recall": null,
+     "V_support": 0,
+     "V_recall": null,
+     "F_support": 0,
+     "F_recall": null
+    },
+    {
+     "subject": "S118",
+     "n": 2277,
+     "accuracy": 0.9508,
+     "N_support": 2165,
+     "N_recall": 1.0,
+     "S_support": 96,
+     "S_recall": 0.0,
+     "V_support": 16,
+     "V_recall": 0.0,
+     "F_support": 0,
+     "F_recall": null
+    },
+    {
+     "subject": "S119",
+     "n": 1987,
+     "accuracy": 0.7765,
+     "N_support": 1543,
+     "N_recall": 1.0,
+     "S_support": 0,
+     "S_recall": null,
+     "V_support": 444,
+     "V_recall": 0.0,
+     "F_support": 0,
+     "F_recall": null
+    },
+    {
+     "subject": "S122",
+     "n": 2474,
+     "accuracy": 1.0,
+     "N_support": 2474,
+     "N_recall": 1.0,
+     "S_support": 0,
+     "S_recall": null,
+     "V_support": 0,
+     "V_recall": null,
+     "F_support": 0,
+     "F_recall": null
+    },
+    {
+     "subject": "S207",
+     "n": 1859,
+     "accuracy": 0.8295,
+     "N_support": 1542,
+     "N_recall": 1.0,
+     "S_support": 107,
+     "S_recall": 0.0,
+     "V_support": 210,
+     "V_recall": 0.0,
+     "F_support": 0,
+     "F_recall": null
+    },
+    {
+     "subject": "S208",
+     "n": 2951,
+     "accuracy": 0.5371,
+     "N_support": 1585,
+     "N_recall": 1.0,
+     "S_support": 2,
+     "S_recall": 0.0,
+     "V_support": 992,
+     "V_recall": 0.0,
+     "F_support": 372,
+     "F_recall": 0.0
+    },
+    {
+     "subject": "S209",
+     "n": 3004,
+     "accuracy": 0.8722,
+     "N_support": 2620,
+     "N_recall": 1.0,
+     "S_support": 383,
+     "S_recall": 0.0,
+     "V_support": 1,
+     "V_recall": 0.0,
+     "F_support": 0,
+     "F_recall": null
+    },
+    {
+     "subject": "S215",
+     "n": 3361,
+     "accuracy": 0.95,
+     "N_support": 3193,
+     "N_recall": 1.0,
+     "S_support": 3,
+     "S_recall": 0.0,
+     "V_support": 164,
+     "V_recall": 0.0,
+     "F_support": 1,
+     "F_recall": 0.0
+    },
+    {
+     "subject": "S220",
+     "n": 2046,
+     "accuracy": 0.9541,
+     "N_support": 1952,
+     "N_recall": 1.0,
+     "S_support": 94,
+     "S_recall": 0.0,
+     "V_support": 0,
+     "V_recall": null,
+     "F_support": 0,
+     "F_recall": null
+    },
+    {
+     "subject": "S223",
+     "n": 2604,
+     "accuracy": 0.7849,
+     "N_support": 2044,
+     "N_recall": 1.0,
+     "S_support": 73,
+     "S_recall": 0.0,
+     "V_support": 473,
+     "V_recall": 0.0,
+     "F_support": 14,
+     "F_recall": 0.0
+    },
+    {
+     "subject": "S230",
+     "n": 2255,
+     "accuracy": 0.9996,
+     "N_support": 2254,
+     "N_recall": 1.0,
+     "S_support": 0,
+     "S_recall": null,
+     "V_support": 1,
+     "V_recall": 0.0,
+     "F_support": 0,
+     "F_recall": null
+    }
+   ],
+   "bootstrap": null,
+   "inference": {
+    "n_beats": 39367,
+    "batch_total_s": 0.0002,
+    "per_beat_ms_batched": 0.0,
+    "device": "cpu"
+   },
+   "records": [
+    "101",
+    "106",
+    "108",
+    "109",
+    "112",
+    "114",
+    "115",
+    "118",
+    "119",
+    "122",
+    "207",
+    "208",
+    "209",
+    "215",
+    "220",
+    "223",
+    "230"
+   ],
+   "created_at": "2026-11-14T19:41:46.681520"
+  },
+  {
+   "partition": "validation",
+   "metrics": {
+    "classes": [
+     "N",
+     "S",
+     "V",
+     "F"
+    ],
+    "n": 13757,
+    "accuracy": 0.91801,
+    "macro_f1": 0.23931,
+    "weighted_f1": 0.87876,
+    "macro_recall": 0.25,
+    "confusion_matrix": [
+     [
+      12629,
+      0,
+      0,
+      0
+     ],
+     [
+      220,
+      0,
+      0,
+      0
+     ],
+     [
+      888,
+      0,
+      0,
+      0
+     ],
+     [
+      20,
+      0,
+      0,
+      0
+     ]
+    ],
+    "per_class": {
+     "N": {
+      "support": 12629,
+      "predicted": 13757,
+      "precision": 0.91801,
+      "recall": 1.0,
+      "sensitivity": 1.0,
+      "specificity": 0.0,
+      "fpr": 1.0,
+      "f1": 0.95725
+     },
+     "S": {
+      "support": 220,
+      "predicted": 0,
+      "precision": null,
+      "recall": 0.0,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "fpr": 0.0,
+      "f1": 0.0
+     },
+     "V": {
+      "support": 888,
+      "predicted": 0,
+      "precision": null,
+      "recall": 0.0,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "fpr": 0.0,
+      "f1": 0.0
+     },
+     "F": {
+      "support": 20,
+      "predicted": 0,
+      "precision": null,
+      "recall": 0.0,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "fpr": 0.0,
+      "f1": 0.0
+     }
+    },
+    "roc": {
+     "N": {
+      "auc": 0.5,
+      "points": [
+       [
+        0.0,
+        0.0
+       ],
+       [
+        1.0,
+        1.0
+       ]
+      ]
+     },
+     "S": {
+      "auc": 0.5,
+      "points": [
+       [
+        0.0,
+        0.0
+       ],
+       [
+        1.0,
+        1.0
+       ]
+      ]
+     },
+     "V": {
+      "auc": 0.5,
+      "points": [
+       [
+        0.0,
+        0.0
+       ],
+       [
+        1.0,
+        1.0
+       ]
+      ]
+     },
+     "F": {
+      "auc": 0.5,
+      "points": [
+       [
+        0.0,
+        0.0
+       ],
+       [
+        1.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "pr": {
+     "N": {
+      "ap": 0.91801,
+      "prevalence": 0.91801,
+      "points": [
+       [
+        0.0,
+        1.0
+       ],
+       [
+        1.0,
+        0.91801
+       ]
+      ],
+      "auc": 0.959
+     },
+     "S": {
+      "ap": 0.01599,
+      "prevalence": 0.01599,
+      "points": [
+       [
+        0.0,
+        1.0
+       ],
+       [
+        1.0,
+        0.01599
+       ]
+      ],
+      "auc": 0.508
+     },
+     "V": {
+      "ap": 0.06455,
+      "prevalence": 0.06455,
+      "points": [
+       [
+        0.0,
+        1.0
+       ],
+       [
+        1.0,
+        0.06455
+       ]
+      ],
+      "auc": 0.53227
+     },
+     "F": {
+      "ap": 0.00145,
+      "prevalence": 0.00145,
+      "points": [
+       [
+        0.0,
+        1.0
+       ],
+       [
+        1.0,
+        0.00145
+       ]
+      ],
+      "auc": 0.50073
+     }
+    },
+    "macro_roc_auc": 0.5
+   },
+   "per_subject": [
+    {
+     "subject": "S116",
+     "n": 2411,
+     "accuracy": 0.9544,
+     "N_support": 2301,
+     "N_recall": 1.0,
+     "S_support": 1,
+     "S_recall": 0.0,
+     "V_support": 109,
+     "V_recall": 0.0,
+     "F_support": 0,
+     "F_recall": null
+    },
+    {
+     "subject": "S124",
+     "n": 1618,
+     "accuracy": 0.9487,
+     "N_support": 1535,
+     "N_recall": 1.0,
+     "S_support": 31,
+     "S_recall": 0.0,
+     "V_support": 47,
+     "V_recall": 0.0,
+     "F_support": 5,
+     "F_recall": 0.0
+    },
+    {
+     "subject": "S201_202",
+     "n": 4098,
+     "accuracy": 0.9017,
+     "N_support": 3695,
+     "N_recall": 1.0,
+     "S_support": 183,
+     "S_recall": 0.0,
+     "V_support": 217,
+     "V_recall": 0.0,
+     "F_support": 3,
+     "F_recall": 0.0
+    },
+    {
+     "subject": "S203",
+     "n": 2975,
+     "accuracy": 0.8497,
+     "N_support": 2528,
+     "N_recall": 1.0,
+     "S_support": 2,
+     "S_recall": 0.0,
+     "V_support": 444,
+     "V_recall": 0.0,
+     "F_support": 1,
+     "F_recall": 0.0
+    },
+    {
+     "subject": "S205",
+     "n": 2655,
+     "accuracy": 0.968,
+     "N_support": 2570,
+     "N_recall": 1.0,
+     "S_support": 3,
+     "S_recall": 0.0,
+     "V_support": 71,
+     "V_recall": 0.0,
+     "F_support": 11,
+     "F_recall": 0.0
+    }
+   ],
+   "bootstrap": {
+    "macro_f1": [
+     0.2334,
+     0.2449
+    ],
+    "accuracy": [
+     0.8752,
+     0.9601
+    ],
+    "N_f1": [
+     0.9335,
+     0.9797
+    ],
+    "N_recall": [
+     1.0,
+     1.0
+    ],
+    "S_f1": [
+     0.0,
+     0.0
+    ],
+    "S_recall": [
+     0.0,
+     0.0
+    ],
+    "V_f1": [
+     0.0,
+     0.0
+    ],
+    "V_recall": [
+     0.0,
+     0.0
+    ],
+    "F_f1": [
+     0.0,
+     0.0
+    ],
+    "F_recall": [
+     0.0,
+     0.0
+    ],
+    "n_boot": 500,
+    "unit": "subject"
+   },
+   "inference": {
+    "n_beats": 13757,
+    "batch_total_s": 0.0003,
+    "per_beat_ms_batched": 0.0,
+    "device": "cpu"
+   },
+   "records": [
+    "116",
+    "124",
+    "201",
+    "202",
+    "203",
+    "205"
+   ],
+   "created_at": "2026-11-14T19:41:49.315284"
+  }
+ ],
+ "test_access": []
+}
