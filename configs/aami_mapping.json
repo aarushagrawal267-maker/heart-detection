@@ -1,0 +1,25 @@
+{
+  "description": "Explicit mapping from MIT-BIH annotation symbols to AAMI EC57 heartbeat classes. Symbols not listed under 'classes' are not beats (or are excluded) and never become training examples.",
+  "classes": {
+    "N": {"name": "Normal and bundle-branch-type beats", "symbols": {"N": "Normal beat", "L": "Left bundle branch block beat", "R": "Right bundle branch block beat", "e": "Atrial escape beat", "j": "Nodal (junctional) escape beat"}},
+    "S": {"name": "Supraventricular ectopic beats", "symbols": {"A": "Atrial premature beat", "a": "Aberrated atrial premature beat", "J": "Nodal (junctional) premature beat", "S": "Supraventricular premature beat"}},
+    "V": {"name": "Ventricular ectopic beats", "symbols": {"V": "Premature ventricular contraction", "E": "Ventricular escape beat"}},
+    "F": {"name": "Fusion beats", "symbols": {"F": "Fusion of ventricular and normal beat"}},
+    "Q": {"name": "Unknown or other beats", "symbols": {"/": "Paced beat", "f": "Fusion of paced and normal beat", "Q": "Unclassifiable beat"}}
+  },
+  "non_beat_symbols": {
+    "+": "Rhythm change", "~": "Signal quality change", "|": "Isolated QRS-like artefact",
+    "x": "Non-conducted P wave (blocked APB) - no QRS, not a heartbeat segment",
+    "!": "Ventricular flutter wave - excluded per AAMI EC57 (some papers map it to V; we do not)",
+    "[": "Start of ventricular flutter/fibrillation", "]": "End of ventricular flutter/fibrillation",
+    "\"": "Comment annotation", "(": "Waveform onset", ")": "Waveform end", "p": "P-wave peak",
+    "t": "T-wave peak", "u": "U-wave peak", "`": "PQ junction", "'": "J point", "^": "Non-captured pacemaker artefact",
+    "s": "ST change", "T": "T-wave change", "*": "Systole", "D": "Diastole", "=": "Measurement", "@": "Link to external data",
+    "B": "Bundle branch block beat (unspecified) - not present in MIT-BIH", "n": "Supraventricular escape beat - not present in MIT-BIH",
+    "r": "R-on-T PVC - not present in MIT-BIH", "?": "Beat not classified during learning - not present in MIT-BIH"
+  },
+  "paced_records": ["102", "104", "107", "217"],
+  "paced_records_note": "Excluded from training and evaluation following the AAMI EC57 recommendation and de Chazal et al. (2004). They remain browsable in the application.",
+  "primary_task_classes": ["N", "S", "V", "F"],
+  "q_class_note": "After removing paced records only a handful of Q beats remain, far too few to learn or score. Q beats are counted and displayed but excluded from the principal 4-class experiment. A 5-class mode is selectable."
+}

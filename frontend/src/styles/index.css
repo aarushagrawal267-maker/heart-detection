@@ -1,0 +1,130 @@
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+@import "uplot/dist/uPlot.min.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-ink-900 text-fg antialiased font-sans;
+  font-feature-settings: "cv11", "ss01";
+}
+
+::selection {
+  background: #2bb3a355;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #273241 transparent;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-xl border border-line bg-ink-800 shadow-panel;
+  }
+  .panel-head {
+    @apply flex items-center justify-between gap-3 border-b border-line-soft px-4 py-3;
+  }
+  .panel-title {
+    @apply text-[13px] font-semibold tracking-tight text-fg;
+  }
+  .panel-sub {
+    @apply text-2xs text-fg-dim;
+  }
+  .label {
+    @apply text-2xs font-medium uppercase tracking-[0.08em] text-fg-dim;
+  }
+  .num {
+    @apply font-mono tabular-nums;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg border border-line-strong bg-ink-700 px-3 py-1.5 text-xs font-medium text-fg transition-colors hover:border-fg-dim/50 hover:bg-ink-600 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg border border-teal/50 bg-teal/15 px-3 py-1.5 text-xs font-semibold text-teal transition-colors hover:bg-teal/25 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg border border-trace/40 bg-trace/10 px-3 py-1.5 text-xs font-semibold text-trace transition-colors hover:bg-trace/20 disabled:opacity-40;
+  }
+  .input {
+    @apply w-full rounded-lg border border-line-strong bg-ink-850 px-2.5 py-1.5 text-xs text-fg outline-none transition-colors placeholder:text-fg-dim focus:border-teal/60;
+  }
+  .seg {
+    @apply inline-flex rounded-lg border border-line-strong bg-ink-850 p-0.5;
+  }
+  .seg > button {
+    @apply rounded-md px-2.5 py-1 text-2xs font-medium text-fg-muted transition-colors hover:text-fg;
+  }
+  .seg > button[data-active="true"] {
+    @apply bg-ink-600 text-fg;
+  }
+  .table {
+    @apply w-full border-collapse text-xs;
+  }
+  .table th {
+    @apply border-b border-line px-3 py-2 text-left text-2xs font-medium uppercase tracking-[0.06em] text-fg-dim;
+  }
+  .table td {
+    @apply border-b border-line-soft px-3 py-2 text-fg-muted;
+  }
+  .table tr:hover td {
+    @apply bg-ink-750/60;
+  }
+  .prose-doc h2 {
+    @apply mb-2 mt-8 text-base font-semibold text-fg first:mt-0;
+  }
+  .prose-doc h3 {
+    @apply mb-1.5 mt-5 text-sm font-semibold text-fg;
+  }
+  .prose-doc p,
+  .prose-doc li {
+    @apply text-[13px] leading-relaxed text-fg-muted;
+  }
+  .prose-doc ul {
+    @apply my-2 list-disc space-y-1 pl-5;
+  }
+  .prose-doc ol {
+    @apply my-2 list-decimal space-y-1 pl-5;
+  }
+  .prose-doc code {
+    @apply rounded bg-ink-700 px-1 py-0.5 font-mono text-[12px] text-fg;
+  }
+  .prose-doc a {
+    @apply text-teal underline-offset-2 hover:underline;
+  }
+}
+
+/* uPlot dark adjustments */
+.uplot,
+.uplot * {
+  font-family: "JetBrains Mono", ui-monospace, monospace !important;
+}
+.u-select {
+  background: #2bb3a322 !important;
+  border-left: 1px solid #2bb3a3aa;
+  border-right: 1px solid #2bb3a3aa;
+}
+.u-legend {
+  display: none;
+}
+.u-cursor-x {
+  border-right: 1px dashed #8b95a566 !important;
+}
+.u-cursor-y {
+  border-bottom: 1px dashed #8b95a533 !important;
+}

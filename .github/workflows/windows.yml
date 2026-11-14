@@ -1,0 +1,58 @@
+name: Windows setup / start / stop
+
+on:
+  push:
+    branches: ["claude/**", "main"]
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: setup.ps1 (CPU PyTorch, dataset download + verification)
+        shell: powershell
+        run: powershell -ExecutionPolicy Bypass -File .\setup.ps1 -Cpu
+      - name: Backend tests (pytest, real dataset)
+        shell: powershell
+        working-directory: backend
+        run: ..\.venv\Scripts\python.exe -m pytest -q
+      - name: Frontend unit tests (Vitest)
+        shell: powershell
+        working-directory: frontend
+        run: npm.cmd test
+      - name: start.ps1 + health checks
+        shell: powershell
+        run: |
+          powershell -ExecutionPolicy Bypass -File .\start.ps1 -NoBrowser
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          (Invoke-WebRequest http://127.0.0.1:8000/api/health -UseBasicParsing).Content
+          (Invoke-WebRequest http://127.0.0.1:8000/docs -UseBasicParsing).StatusCode
+          (Invoke-WebRequest http://127.0.0.1:5173/api/overview -UseBasicParsing).StatusCode
+      - name: End-to-end tests (Playwright)
+        shell: powershell
+        working-directory: frontend
+        run: |
+          npx.cmd playwright install chromium
+          npm.cmd run e2e
+      - name: stop.ps1
+        if: always()
+        shell: powershell
+        run: |
+          powershell -ExecutionPolicy Bypass -File .\stop.ps1
+          Start-Sleep -Seconds 2
+          if (Get-NetTCPConnection -LocalPort 8000 -State Listen -ErrorAction SilentlyContinue) { Write-Error "port 8000 still in use"; exit 1 }
+          if (Get-NetTCPConnection -LocalPort 5173 -State Listen -ErrorAction SilentlyContinue) { Write-Error "port 5173 still in use"; exit 1 }
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-logs
+          path: .run/
