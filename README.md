@@ -20,6 +20,24 @@ project**, evaluated on patients the model has never seen.
 8. Evaluates on held-out subjects: confusion matrix, per-class sensitivity, precision, specificity and F1, macro and weighted F1, ROC and precision–recall curves, per-patient results, subject-bootstrap confidence intervals and inference time.
 9. Explains individual predictions with Integrated Gradients, Grad-CAM, saliency and occlusion, plus a randomisation sanity check.
 
+## Results on held-out patients
+
+21 test subjects, never used for training, early stopping or model selection. The model was
+selected by 5-fold subject-grouped cross-validation on the training pool. Full tables, per-patient
+breakdown and the test-access log are in [docs/RESULTS.md](docs/RESULTS.md).
+
+| Model | Macro-F1 (95% CI, patient bootstrap) | Accuracy | S sensitivity | V sensitivity |
+|---|---|---|---|---|
+| **ECGNet (1D CNN, this project)** | **0.464 (0.372–0.559)** | 89.4% | 12.6% | 93.2% |
+| Random forest (RR + morphology) | 0.409 (0.317–0.524) | 82.6% | 15.5% | 96.6% |
+| Logistic regression (RR only) | 0.405 (0.336–0.456) | 76.1% | 10.9% | 69.9% |
+| Majority class ("always N") | 0.235 | 88.7% | 0% | 0% |
+
+The CNN generalises best overall and detects ventricular beats well. Supraventricular (S) and
+fusion (F) beats remain hard in unseen patients. One test subject (record 232) holds 1,382 of the
+1,782 S beats, and only 1.3% of them are detected. Across the other test subjects, S sensitivity is
+51.7%. These are research results on a 1970s database, not evidence of clinical performance.
+
 ## Application pages
 
 | Page | Purpose |
