@@ -56,8 +56,8 @@ export default function EcgChart({
 }: Props) {
   const wrap = useRef<HTMLDivElement>(null);
   const plot = useRef<uPlot | null>(null);
-  const state = useRef({ reference, predictions, selected, shading, onSelectTime, onZoom });
-  state.current = { reference, predictions, selected, shading, onSelectTime, onZoom };
+  const state = useRef({ reference, predictions, selected, shading, onSelectTime, onZoom, range });
+  state.current = { reference, predictions, selected, shading, onSelectTime, onZoom, range };
 
   // create once
   useEffect(() => {
@@ -67,9 +67,10 @@ export default function EcgChart({
     const opts: uPlot.Options = {
       width: el.clientWidth || 800,
       height,
-      padding: [LANE_H + 6, 8, hasPred ? LANE_H + 4 : 4, 0],
+      padding: [LANE_H + 6, 8, 4, 0],
       scales: {
-        x: { time: false, auto: false, range: () => [range[0], range[1]] },
+        // read the live range from a ref: a closure here would freeze the initial window
+        x: { time: false, auto: false, range: () => [state.current.range[0], state.current.range[1]] },
         y: {
           auto: !yRange,
           range: yRange
@@ -84,7 +85,13 @@ export default function EcgChart({
       select: { show: true, left: 0, top: 0, width: 0, height: 0 },
       legend: { show: false },
       axes: [
-        { ...AXIS_STYLE, values: (_u, vals) => vals.map((v) => clock(v, range[1] - range[0] < 20 ? 1 : 0)), size: 28 },
+        {
+          ...AXIS_STYLE,
+          values: (_u, vals) => vals.map((v) => clock(v, state.current.range[1] - state.current.range[0] < 20 ? 1 : 0)),
+          // leave room for the prediction lane between the plot and the time labels
+          size: hasPred ? 28 + LANE_H : 28,
+          gap: hasPred ? LANE_H + 2 : 5,
+        },
         { ...AXIS_STYLE, values: (_u, vals) => vals.map((v) => v.toFixed(1)), size: 42, label: "mV", labelSize: 14 },
       ],
       series: [{}, { stroke: traceColor, width: 1.25, points: { show: false } }],
@@ -180,7 +187,7 @@ function drawLanes(u: uPlot, reference: EcgMarker[], predictions: PredMarker[] |
   ctx.fillStyle = "#5F6A7A";
   ctx.textAlign = "right";
   ctx.fillText("REF", left - 6 * dpr, laneY);
-  if (predictions) ctx.fillText("CNN", left - 6 * dpr, top + height + (LANE_H / 2 + 2) * dpr);
+  if (predictions) ctx.fillText("CNN", left - 6 * dpr, top + height + (LANE_H / 2 + 5) * dpr);
   ctx.textAlign = "center";
 
   // selected beat highlight
@@ -220,7 +227,7 @@ function drawLanes(u: uPlot, reference: EcgMarker[], predictions: PredMarker[] |
 
   // prediction lane
   if (predictions) {
-    const py = top + height + (LANE_H / 2 + 2) * dpr;
+    const py = top + height + (LANE_H / 2 + 5) * dpr;
     for (const m of preds) {
       const x = u.valToPos(m.time_s, "x", true);
       const c = classColor(m.cls);

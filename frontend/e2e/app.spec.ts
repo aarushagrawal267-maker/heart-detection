@@ -22,6 +22,14 @@ test.describe("QRS Atlas end-to-end (real data)", () => {
     await over.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
     await expect(page.getByTestId("beat-panel")).toContainText("Beat #");
     await expect(page.getByTestId("beat-details")).toContainText("Reference class");
+    // panning must move the displayed window (regression: stale x-range)
+    await page.getByRole("button", { name: "Pan right" }).click();
+    await expect(page.getByText(/0:08\.0 – 0:18\.0/)).toBeVisible();
+    const xs = await page.evaluate(() => {
+      const labels = Array.from(document.querySelectorAll('[data-testid="explorer-ecg"] .u-axis')[0]?.querySelectorAll(".u-label, div") ?? []);
+      return labels.map((d) => d.textContent ?? "").join(" ");
+    });
+    expect(xs).not.toContain("0:00.0");
     await page.getByTestId("record-picker").selectOption("114");
     await expect(page.getByTestId("channel-picker")).toHaveValue("MLII");
     await page.getByTestId("signal-mode").getByText("Preprocessed").click();
