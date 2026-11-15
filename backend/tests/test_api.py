@@ -110,3 +110,34 @@ def test_cancel_before_worker_start_is_respected(temp_store):
     trainer.run_experiment(exp.id)
     with db.session() as s:
         assert s.get(db.Experiment, exp.id).status == "cancelled"
+
+
+def test_basic_auth_middleware_protects_everything_but_health():
+    import base64
+    from fastapi import FastAPI
+    from app.main import BasicAuthMiddleware
+    mini = FastAPI()
+    mini.add_middleware(BasicAuthMiddleware, username="qrs", password="s3cret")
+
+    @mini.get("/api/health")
+    def h():
+        return {"ok": True}
+
+    @mini.get("/api/overview")
+    def o():
+        return {"data": 1}
+
+    c = TestClient(mini)
+    assert c.get("/api/health").status_code == 200
+    r = c.get("/api/overview")
+    assert r.status_code == 401 and "Basic" in r.headers["www-authenticate"]
+    bad = base64.b64encode(b"qrs:wrong").decode()
+    assert c.get("/api/overview", headers={"Authorization": f"Basic {bad}"}).status_code == 401
+    good = base64.b64encode(b"qrs:s3cret").decode()
+    assert c.get("/api/overview", headers={"Authorization": f"Basic {good}"}).json() == {"data": 1}
+
+
+def test_training_can_be_disabled(client, monkeypatch):
+    monkeypatch.setenv("QRS_ALLOW_TRAINING", "false")
+    r = client.post("/api/experiments", json={"kind": "cnn", "config": {}, "start": False})
+    assert r.status_code == 403
