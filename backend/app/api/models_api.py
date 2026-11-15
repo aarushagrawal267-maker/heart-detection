@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import shutil
 from typing import Any, Literal
 
@@ -77,6 +78,8 @@ def training_defaults() -> dict:
 @router.post("/experiments", summary="Create (and optionally start) a training experiment")
 def create_experiment(body: ExperimentCreate) -> dict:
     require_processed()
+    if os.environ.get("QRS_ALLOW_TRAINING", "true").lower() in ("0", "false", "no"):
+        raise HTTPException(403, "Training is disabled on this deployment (QRS_ALLOW_TRAINING=false).")
     cfg = body.config
     if body.kind == "cnn":
         if "classes" in cfg and not set(cfg["classes"]) <= {"N", "S", "V", "F", "Q"}:

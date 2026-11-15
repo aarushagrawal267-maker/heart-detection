@@ -22,6 +22,7 @@ export default function App() {
         <Route path="lab" element={<Lab />} />
         <Route path="evaluation" element={<Evaluation />} />
         <Route path="experiments" element={<Experiments />} />
+        <Route path="research" element={<Docs />} />
         <Route path="docs" element={<Docs />} />
         <Route path="*" element={<Overview />} />
       </Route>

@@ -14,6 +14,10 @@ export default defineConfig({
   use: {
     baseURL: process.env.QRS_FRONTEND_URL ?? "http://127.0.0.1:5173",
     trace: "off",
+    // for a password-protected deployment: QRS_E2E_USER / QRS_E2E_PASSWORD
+    httpCredentials: process.env.QRS_E2E_PASSWORD
+      ? { username: process.env.QRS_E2E_USER ?? "qrs", password: process.env.QRS_E2E_PASSWORD }
+      : undefined,
     viewport: { width: 1440, height: 1000 },
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 1000 } } }],

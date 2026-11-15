@@ -1,0 +1,29 @@
+# Fly.io: fly launch --copy-config --no-deploy ; fly secrets set QRS_AUTH_PASSWORD=... ; fly deploy
+app = "qrs-atlas"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8000"
+  QRS_AUTH_USER = "qrs"
+  QRS_ALLOW_TRAINING = "true"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = "60s"
+    interval = "30s"
+    method = "GET"
+    path = "/api/health"
+    timeout = "5s"
+
+[[vm]]
+  size = "shared-cpu-2x"
+  memory = "2gb"

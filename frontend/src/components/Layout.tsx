@@ -38,7 +38,7 @@ const NAV = [
       { to: "/experiments", label: "Experiment History", icon: History },
     ],
   },
-  { group: "Reference", items: [{ to: "/docs", label: "Research & Docs", icon: BookOpen }] },
+  { group: "Reference", items: [{ to: "/research", label: "Research & Docs", icon: BookOpen }] },
 ];
 
 function Logo() {
