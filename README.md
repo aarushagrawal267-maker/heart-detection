@@ -160,6 +160,7 @@ cd frontend && npm run e2e            # Playwright (needs backend + frontend run
 - [Scientific methodology](docs/METHODOLOGY.md)
 - [Results](docs/RESULTS.md)
 - [Limitations and safety](docs/LIMITATIONS.md)
+- [Deployment (Docker, Render, Fly.io, Railway, Hugging Face)](docs/DEPLOYMENT.md)
 - [References](docs/REFERENCES.md)
 
 ## Data licence and citation

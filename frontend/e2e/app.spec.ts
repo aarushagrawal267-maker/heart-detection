@@ -113,7 +113,7 @@ test.describe("QRS Atlas end-to-end (real data)", () => {
   });
 
   test("documentation covers methodology and limitations", async ({ page }) => {
-    await page.goto("/docs");
+    await page.goto("/research");
     const docs = page.getByTestId("docs");
     await expect(docs).toContainText("Patient-independent evaluation");
     await expect(docs).toContainText("record 202 is moved to the training side", { ignoreCase: true });
