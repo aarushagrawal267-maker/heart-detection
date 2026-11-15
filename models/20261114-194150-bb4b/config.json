@@ -1,0 +1,26 @@
+{
+  "config": {
+    "model": "logreg_rr",
+    "classes": [
+      "N",
+      "S",
+      "V",
+      "F"
+    ],
+    "val_fold": 2,
+    "seed": 42
+  },
+  "pipeline": {
+    "version": 1,
+    "lead": "MLII",
+    "baseline_median_ms": [
+      200,
+      600
+    ],
+    "lowpass_hz": 45.0,
+    "lowpass_order": 4,
+    "store_pre": 128,
+    "store_post": 192,
+    "rr_local_beats": 10
+  }
+}

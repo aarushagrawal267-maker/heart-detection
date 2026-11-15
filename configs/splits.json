@@ -1,0 +1,16 @@
+{
+  "name": "subject-corrected-DS1-DS2",
+  "version": 1,
+  "description": "Inter-patient split based on de Chazal et al. (2004) DS1/DS2, corrected so that records 201 and 202 (same subject) stay together: record 202 is moved from DS2 (test) to the training side.",
+  "same_subject_groups": [["201", "202"]],
+  "subject_note": "The MIT-BIH directory documents exactly one pair of recordings from the same subject (201 and 202). Every other recording is treated as its own subject, as documented by the database; identities cannot be independently verified.",
+  "train_pool": ["101","106","108","109","112","114","115","116","118","119","122","124","201","202","203","205","207","208","209","215","220","223","230"],
+  "test": ["100","103","105","111","113","117","121","123","200","210","212","213","214","219","221","222","228","231","232","233","234"],
+  "excluded": ["102","104","107","217"],
+  "original_protocol": {
+    "DS1": ["101","106","108","109","112","114","115","116","118","119","122","124","201","203","205","207","208","209","215","220","223","230"],
+    "DS2": ["100","103","105","111","113","117","121","123","200","202","210","212","213","214","219","221","222","228","231","232","233","234"]
+  },
+  "n_folds": 5,
+  "fold_seed": 2024
+}

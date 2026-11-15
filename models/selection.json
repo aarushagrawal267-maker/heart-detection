@@ -1,0 +1,34 @@
+{
+  "criterion": "mean macro-F1 over 5 subject-grouped CV folds of the training pool",
+  "test_subjects_used": false,
+  "candidates": [
+    {
+      "id": "20261114-200900-e49e",
+      "name": "ECGNet CV - morphology + RR (weighted CE)",
+      "cv_mean_macro_f1": 0.5214,
+      "cv_std_macro_f1": 0.1525,
+      "val_macro_f1": 0.43623
+    },
+    {
+      "id": "20261114-203709-bc51",
+      "name": "ECGNet CV - regularised (16/32/64, wd 1e-3, inverse-frequency weights)",
+      "cv_mean_macro_f1": 0.5083,
+      "cv_std_macro_f1": 0.152,
+      "val_macro_f1": 0.39466
+    },
+    {
+      "id": "20261114-204853-6421",
+      "name": "ECGNet CV - morphology only (ablation)",
+      "cv_mean_macro_f1": 0.4922,
+      "cv_std_macro_f1": 0.1456,
+      "val_macro_f1": 0.44572
+    }
+  ],
+  "selected": {
+    "id": "20261114-200900-e49e",
+    "name": "ECGNet CV - morphology + RR (weighted CE)",
+    "cv_mean_macro_f1": 0.5214,
+    "cv_std_macro_f1": 0.1525,
+    "val_macro_f1": 0.43623
+  }
+}

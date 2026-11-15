@@ -1,0 +1,47 @@
+{
+  "config": {
+    "model": "ECGNet",
+    "classes": [
+      "N",
+      "S",
+      "V",
+      "F"
+    ],
+    "window_pre": 90,
+    "window_post": 166,
+    "use_rr": true,
+    "channels": [
+      32,
+      64,
+      128
+    ],
+    "dropout": 0.4,
+    "epochs": 20,
+    "batch_size": 256,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "loss": "weighted_ce",
+    "class_weight_power": 0.5,
+    "focal_gamma": 2.0,
+    "sampler": "none",
+    "augment": true,
+    "early_stopping_patience": 6,
+    "val_fold": 2,
+    "cross_validate": false,
+    "seed": 42,
+    "max_train_beats": null
+  },
+  "pipeline": {
+    "version": 1,
+    "lead": "MLII",
+    "baseline_median_ms": [
+      200,
+      600
+    ],
+    "lowpass_hz": 45.0,
+    "lowpass_order": 4,
+    "store_pre": 128,
+    "store_post": 192,
+    "rr_local_beats": 10
+  }
+}

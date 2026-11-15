@@ -1,0 +1,168 @@
+# QRS Atlas: patient-independent ECG heartbeat classification
+
+A locally run research platform that classifies heartbeats from the real **MIT-BIH
+Arrhythmia Database** with a **1D convolutional neural network trained from scratch in this
+project**, evaluated on patients the model has never seen.
+
+> **Research and education only.** QRS Atlas is not a medical device, has not been clinically
+> validated, and its outputs are not diagnoses. Do not use it to assess anyone's heart,
+> monitor patients or make treatment decisions. See [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+
+## What it does
+
+1. Downloads MIT-BIH v1.0.0 from PhysioNet and verifies all 144 record files against the published SHA-256 checksums.
+2. Loads the WFDB signals (`.dat`/`.hea`) and expert annotations (`.atr`), using the MLII lead identified by header name.
+3. Removes baseline wander (200 ms + 600 ms median filters) and noise (zero-phase 45 Hz low-pass).
+4. Cuts one 256-sample window (90 before + 166 after) around every expert beat position and adds RR-interval features.
+5. Maps MIT-BIH symbols to AAMI EC57 classes (N, S, V, F, Q) through an explicit, documented table.
+6. Splits strictly **by subject**, using the DS1/DS2 inter-patient protocol corrected so that records 201 and 202 (same person) stay together, with automated leakage tests.
+7. Trains **ECGNet**, the project's own 1D CNN (≈171k parameters, random initialisation, no pretrained weights), plus baseline models.
+8. Evaluates on held-out subjects: confusion matrix, per-class sensitivity, precision, specificity and F1, macro and weighted F1, ROC and precision–recall curves, per-patient results, subject-bootstrap confidence intervals and inference time.
+9. Explains individual predictions with Integrated Gradients, Grad-CAM, saliency and occlusion, plus a randomisation sanity check.
+
+## Results on held-out patients
+
+21 test subjects, never used for training, early stopping or model selection. The model was
+selected by 5-fold subject-grouped cross-validation on the training pool. Full tables, per-patient
+breakdown and the test-access log are in [docs/RESULTS.md](docs/RESULTS.md).
+
+| Model | Macro-F1 (95% CI, patient bootstrap) | Accuracy | S sensitivity | V sensitivity |
+|---|---|---|---|---|
+| **ECGNet (1D CNN, this project)** | **0.464 (0.372–0.559)** | 89.4% | 12.6% | 93.2% |
+| Random forest (RR + morphology) | 0.409 (0.317–0.524) | 82.6% | 15.5% | 96.6% |
+| Logistic regression (RR only) | 0.405 (0.336–0.456) | 76.1% | 10.9% | 69.9% |
+| Majority class ("always N") | 0.235 | 88.7% | 0% | 0% |
+
+The CNN generalises best overall and detects ventricular beats well. Supraventricular (S) and
+fusion (F) beats remain hard in unseen patients. One test subject (record 232) holds 1,382 of the
+1,782 S beats, and only 1.3% of them are detected. Across the other test subjects, S sensitivity is
+51.7%. These are research results on a 1970s database, not evidence of clinical performance.
+
+## Application pages
+
+| Page | Purpose |
+|---|---|
+| Overview | Dataset, model and experiment status, live waveform, recent activity |
+| Signal Explorer | Full-resolution ECG viewer: ECG paper grid, zoom and pan, minimap, reference annotations, quality, beat inspection |
+| Beat Classification | Run the CNN on one beat: class scores, comparison with the reference, attribution maps |
+| Full ECG Analysis | Classify a whole record (reference or automatically detected beats); reference and prediction lanes, disagreements, timeline |
+| Dataset Explorer | Inventory, subjects, leads, symbol and class counts, imbalance, exclusions, leakage checks, provenance, detector evaluation |
+| Model Laboratory | Configure and train the CNN or baselines on real data with live loss and F1 curves |
+| Model Evaluation | All metrics by partition, curves, per-patient table, model comparison, exact split, test-access log |
+| Experiment History | Every run with config, preprocessing, partitions, environment, metrics and checkpoint; side-by-side comparison; JSON export |
+| Research & Docs | Background, methodology, limitations, reproducibility, references |
+
+## Quick start (Windows)
+
+Requirements: **Python 3.11–3.13** (python.org installer) and **Node.js 18+** (LTS). Open
+PowerShell in the project folder:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\setup.ps1
+```
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\start.ps1
+```
+
+| Address | What |
+|---|---|
+| <http://localhost:5173> | Application |
+| <http://localhost:8000> | API |
+| <http://localhost:8000/docs> | Interactive API documentation |
+
+Stop everything with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\stop.ps1
+```
+
+`setup.ps1` installs the CPU build of PyTorch by default. Add `-Cuda` for an NVIDIA GPU, or
+`-SkipData` to download the dataset later from the Dataset Explorer. It never trains a model.
+The trained models in `models/` (with their full metric history) are imported automatically
+on first start.
+
+## Manual start (any OS)
+
+```bash
+python -m venv .venv && . .venv/bin/activate
+pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu
+pip install -r backend/requirements.txt
+cd backend && python -m app.cli download && python -m app.cli init-db
+uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+In a second terminal:
+
+```bash
+cd frontend && npm ci && npm run dev
+```
+
+## Architecture
+
+```
+React + TypeScript + Vite + Tailwind  (uPlot ECG viewer, Plotly analytics charts)
+          │  /api (Vite proxy)
+FastAPI + Pydantic ──── SQLite (SQLAlchemy): experiments, epochs, evaluations, test-access log
+   │
+   ├─ data/        PhysioNet download, SHA-256 verification, WFDB loading, subject map
+   ├─ signal/      filtering, quality profiling, Pan-Tompkins-style R-peak detector
+   ├─ labels/      AAMI EC57 mapping
+   ├─ segmentation/ beat windows + RR features → memory-mapped float32 array + Parquet metadata
+   ├─ splits/      subject-level partitions, CV folds, leakage checks
+   ├─ models/      ECGNet (PyTorch), baselines (scikit-learn)
+   ├─ training/    worker process, live metrics, checkpoints, experiment export/import
+   ├─ evaluation/  metrics, subject bootstrap
+   ├─ explain/     IG, Grad-CAM, saliency, occlusion, sanity check
+   └─ inference/   single-beat and whole-record classification
+```
+
+Waveforms use uPlot rather than Plotly. A record is 650,000 samples per channel, and a canvas
+renderer with min/max decimation keeps zoom and pan smooth while still drawing a true ECG paper
+grid. Plotly is used for analytical charts.
+
+## Folder structure
+
+```
+backend/        FastAPI app (app/), tests/, scripts/, requirements.txt
+frontend/       React app (src/), Vitest unit tests, Playwright e2e tests (e2e/)
+configs/        aami_mapping.json, splits.json
+models/         trained checkpoints + experiment.json records + selection.json
+data/           raw MIT-BIH (read-only), processed beats, SQLite DB   (not committed)
+docs/           DATASET, METHODOLOGY, RESULTS, LIMITATIONS, REFERENCES
+setup.ps1 start.ps1 stop.ps1
+.github/workflows/windows.yml   Windows CI: setup → tests → start → e2e → stop
+```
+
+## Reproducing the experiments
+
+```bash
+cd backend
+python scripts/run_experiments.py   # baselines + CNN variants (validation fold)
+python scripts/select_model.py      # 5-fold subject-grouped CV model selection
+```
+
+Held-out test evaluation is a separate, logged action: use the "Evaluate on held-out subjects"
+button on the Model Evaluation page, or `POST /api/experiments/{id}/evaluate-test`. Results are
+in [docs/RESULTS.md](docs/RESULTS.md).
+
+## Tests
+
+```bash
+cd backend && pytest                  # unit, leakage, real-data integrity, API, real training job
+cd frontend && npm test               # Vitest
+cd frontend && npm run e2e            # Playwright (needs backend + frontend running)
+```
+
+## Documentation
+
+- [Dataset, acquisition, licence, citation](docs/DATASET.md)
+- [Scientific methodology](docs/METHODOLOGY.md)
+- [Results](docs/RESULTS.md)
+- [Limitations and safety](docs/LIMITATIONS.md)
+- [References](docs/REFERENCES.md)
+
+## Data licence and citation
+
+MIT-BIH Arrhythmia Database, PhysioNet, ODC-By 1.0. Please cite Moody & Mark (2001) and
+Goldberger et al. (2000); full references are in [docs/DATASET.md](docs/DATASET.md).
