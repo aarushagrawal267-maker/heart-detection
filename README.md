@@ -39,7 +39,7 @@ project**, evaluated on patients the model has never seen.
 | Backend | Python 3.11–3.13, FastAPI, Pydantic, SQLAlchemy + SQLite, Uvicorn |
 | Frontend | React 18, TypeScript, Vite, Tailwind CSS, TanStack Query, uPlot, Plotly |
 | Testing | pytest, Vitest + Testing Library, Playwright end-to-end tests |
-| Deployment | Docker (single image), Render / Fly.io / Railway configs, Windows CI on GitHub Actions |
+| Deployment | Docker (single image), Render / Fly.io / Railway configs, Windows and Linux CI on GitHub Actions |
 
 ## Results on held-out patients
 
@@ -113,7 +113,14 @@ Requirements: Python 3.11–3.13 and Node.js 18+.
 ```
 
 Open <http://localhost:5173>. Use `./setup.sh --skip-data` to download the dataset later from
-the Dataset Explorer.
+the Dataset Explorer. If port 8000 or 5173 is already used by another program, pick other ports:
+`QRS_BACKEND_PORT=8001 QRS_FRONTEND_PORT=5174 ./start.sh`.
+
+End-to-end browser tests (with the app running):
+
+```bash
+cd frontend && npx playwright install chromium && QRS_FRONTEND_URL=http://127.0.0.1:5173 npm run e2e
+```
 
 ## Manual start (any OS)
 
@@ -167,6 +174,7 @@ setup.ps1 start.ps1 stop.ps1   Windows scripts
 setup.sh start.sh              Linux / macOS scripts
 Dockerfile render.yaml fly.toml railway.json   single-image deployment
 .github/workflows/windows.yml   Windows CI: setup → tests → start → e2e → stop
+.github/workflows/linux.yml     Linux CI: setup.sh → pytest → Vitest → build → start.sh → e2e
 ```
 
 ## Reproducing the experiments
