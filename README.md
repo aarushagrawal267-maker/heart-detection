@@ -20,6 +20,27 @@ project**, evaluated on patients the model has never seen.
 8. Evaluates on held-out subjects: confusion matrix, per-class sensitivity, precision, specificity and F1, macro and weighted F1, ROC and precision–recall curves, per-patient results, subject-bootstrap confidence intervals and inference time.
 9. Explains individual predictions with Integrated Gradients, Grad-CAM, saliency and occlusion, plus a randomisation sanity check.
 
+## Screenshots
+
+| Overview | Signal Explorer |
+|---|---|
+| ![Overview](docs/screenshots/overview.png) | ![Signal Explorer](docs/screenshots/explorer.png) |
+| **Beat Classification** (CNN output + Integrated Gradients) | **Full ECG Analysis** |
+| ![Beat Classification](docs/screenshots/classify.png) | ![Full ECG Analysis](docs/screenshots/analysis.png) |
+| **Model Evaluation** | **Dataset Explorer** |
+| ![Model Evaluation](docs/screenshots/evaluation.png) | ![Dataset Explorer](docs/screenshots/dataset.png) |
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Machine learning | PyTorch (1D CNN, trained from scratch), scikit-learn (baselines), NumPy, SciPy |
+| Data | WFDB (PhysioNet signal format), pandas + Parquet, memory-mapped NumPy arrays |
+| Backend | Python 3.11–3.13, FastAPI, Pydantic, SQLAlchemy + SQLite, Uvicorn |
+| Frontend | React 18, TypeScript, Vite, Tailwind CSS, TanStack Query, uPlot, Plotly |
+| Testing | pytest, Vitest + Testing Library, Playwright end-to-end tests |
+| Deployment | Docker (single image), Render / Fly.io / Railway configs, Windows CI on GitHub Actions |
+
 ## Results on held-out patients
 
 21 test subjects, never used for training, early stopping or model selection. The model was
@@ -82,6 +103,18 @@ powershell -ExecutionPolicy Bypass -File .\stop.ps1
 The trained models in `models/` (with their full metric history) are imported automatically
 on first start.
 
+## Quick start (Linux / macOS)
+
+Requirements: Python 3.11–3.13 and Node.js 18+.
+
+```bash
+./setup.sh          # venv, CPU PyTorch, requirements, MIT-BIH download + verification, npm ci
+./start.sh          # backend on :8000 and frontend on :5173; Ctrl+C stops both
+```
+
+Open <http://localhost:5173>. Use `./setup.sh --skip-data` to download the dataset later from
+the Dataset Explorer.
+
 ## Manual start (any OS)
 
 ```bash
@@ -130,7 +163,9 @@ configs/        aami_mapping.json, splits.json
 models/         trained checkpoints + experiment.json records + selection.json
 data/           raw MIT-BIH (read-only), processed beats, SQLite DB   (not committed)
 docs/           DATASET, METHODOLOGY, RESULTS, LIMITATIONS, REFERENCES
-setup.ps1 start.ps1 stop.ps1
+setup.ps1 start.ps1 stop.ps1   Windows scripts
+setup.sh start.sh              Linux / macOS scripts
+Dockerfile render.yaml fly.toml railway.json   single-image deployment
 .github/workflows/windows.yml   Windows CI: setup → tests → start → e2e → stop
 ```
 
@@ -162,6 +197,18 @@ cd frontend && npm run e2e            # Playwright (needs backend + frontend run
 - [Limitations and safety](docs/LIMITATIONS.md)
 - [Deployment (Docker, Render, Fly.io, Railway, Hugging Face)](docs/DEPLOYMENT.md)
 - [References](docs/REFERENCES.md)
+
+## Limitations
+
+- Trained and tested on one 1970s–80s database (48 recordings, 47 people); results may not
+  transfer to other devices, leads, populations or wearables.
+- Supraventricular (S) and fusion (F) beats are poorly detected in unseen patients (see results above).
+- It classifies individual beats; it does not diagnose rhythms or conditions and has no clinical validation.
+- Full discussion: [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+
+## Licence
+
+Source code: [MIT](LICENSE). The dataset is not redistributed in this repository.
 
 ## Data licence and citation
 
