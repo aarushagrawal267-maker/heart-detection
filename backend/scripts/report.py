@@ -100,8 +100,8 @@ def main() -> None:
                 L += ["", f"Subject {top['subject']} contributes {top['S_support']:,} of the "
                       f"{sum(r['S_support'] for r in s_rows):,} test S beats, and only {p(top['S_recall'])} of them are detected. "
                       f"Excluding that one subject, S sensitivity is {p((tp_all - tp_top) / rest)} "
-                      f"({tp_all - tp_top} of {rest}). This is a post-hoc, descriptive subgroup figure, not a pre-specified result. "
-                      "The overall S figure is therefore dominated by a single patient.", ""]
+                      f"({tp_all - tp_top} of {rest}). The overall S figure is therefore dominated by a single patient. "
+                      "The figure excluding that subject is a post-hoc, descriptive subgroup result, not a pre-specified one.", ""]
         log = s.query(db.TestAccess).order_by(db.TestAccess.timestamp).all()
         L += ["## 4. Test-set access log", "", "| When (UTC) | Experiment | Purpose |", "|---|---|---|"]
         L += [f"| {t.timestamp:%Y-%m-%d %H:%M} | `{t.experiment_id}` | {t.purpose} |" for t in log] or ["| — | — | — |"]

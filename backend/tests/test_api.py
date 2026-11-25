@@ -188,3 +188,5 @@ def test_bundled_model_serves_predictions_and_bad_inputs_get_clear_errors(client
     r = client.post("/api/inference/beat", json={"record": "100", "beat_index": 3})
     assert r.status_code == 409 and "No trained CNN" in r.json()["detail"]
     assert client.get("/api/models/active").json() is None
+    r = client.post(f"/api/experiments/{BUNDLED}/activate")
+    assert r.status_code == 409 and "missing" in r.json()["detail"]

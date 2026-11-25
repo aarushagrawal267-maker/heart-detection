@@ -59,7 +59,8 @@ def _load(exp_id: str):
     except Exception as exc:  # noqa: BLE001 - corrupt/incompatible file -> clear message
         raise NoModel(f"Model file for experiment {exp_id} could not be loaded ({file}): "
                       f"{type(exc).__name__}: {exc}") from exc
-    if ck.get("pipeline_hash", config.pipeline_hash(ck["pipeline"])) != config.pipeline_hash():
+    trained_hash = ck.get("pipeline_hash") or config.pipeline_hash(ck.get("pipeline"))
+    if trained_hash != config.pipeline_hash():
         raise NoModel(f"Experiment {exp_id} was trained with a different preprocessing pipeline "
                       "than the current beat set; retrain it before using it for inference.")
     return model, scaler, ck

@@ -137,7 +137,7 @@ Per-patient sensitivity for the minority classes (subjects with ≥20 S or F bea
 | S232 | 1382 | 1.3% | 0 | — | 0 | — |
 | S234 | 50 | 6.0% | 0 | — | 3 | 100.0% |
 
-Subject S232 contributes 1,382 of the 1,782 test S beats, and only 1.3% of them are detected. Excluding that one subject, S sensitivity is 51.7% (207 of 400). This is a post-hoc, descriptive subgroup figure, not a pre-specified result. The overall S figure is therefore dominated by a single patient.
+Subject S232 contributes 1,382 of the 1,782 test S beats, and only 1.3% of them are detected. Excluding that one subject, S sensitivity is 51.7% (207 of 400). The overall S figure is therefore dominated by a single patient. The figure excluding that subject is a post-hoc, descriptive subgroup result, not a pre-specified one.
 
 ## 4. Test-set access log
 

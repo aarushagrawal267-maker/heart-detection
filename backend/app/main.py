@@ -85,6 +85,8 @@ def _startup() -> None:
         log.info("Inference model ready: experiment %s", exp_id)
     except service.NoModel as exc:
         log.warning("No inference model available: %s", exc)
+    except Exception:  # noqa: BLE001 - preloading is optional; never block start-up
+        log.exception("Preloading the inference model failed; the API starts without it")
 
 
 # ---- production: serve the built frontend from the same origin -------------------------
