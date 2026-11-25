@@ -87,10 +87,14 @@ test.describe("QRS Atlas end-to-end (real data)", () => {
     await page.getByTestId("start-training").click();
     await expect(page.getByTestId("training-message")).toContainText(/epoch|loading|starting|evaluating|data/, { timeout: 60_000 });
     await page.getByTestId("cancel-training").click();
-    await expect(page.getByTestId("training-monitor")).toContainText("cancelled", { timeout: 90_000 });
+    // Wait for the worker to really stop (the experiment name itself contains "cancelled",
+    // so matching the monitor text alone would pass while the job is still running).
+    await expect(page.getByTestId("training-message")).toContainText(/cancelled (by user|before start)/, { timeout: 90_000 });
     const exps = await (await request.get("/api/experiments")).json();
     for (const e of exps.filter((x: { name: string }) => x.name === "e2e smoke (cancelled)")) {
-      await request.delete(`/api/experiments/${e.id}`);
+      await expect.poll(async () => (await (await request.get(`/api/experiments/${e.id}`)).json()).status,
+        { timeout: 30_000 }).not.toMatch(/^(running|cancelling|queued)$/);
+      expect((await request.delete(`/api/experiments/${e.id}`)).ok()).toBeTruthy();
     }
   });
 

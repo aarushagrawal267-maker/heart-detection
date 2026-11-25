@@ -156,7 +156,7 @@ export function ResearchNotice() {
   return (
     <Note tone="safety">
       <strong className="font-semibold text-fg">Research-model output.</strong> For education and research only — not a
-      medical device, not a diagnosis, and not a substitute for a clinician.
+      medical device, not a diagnosis, and not a substitute for a doctor reading the ECG.
     </Note>
   );
 }

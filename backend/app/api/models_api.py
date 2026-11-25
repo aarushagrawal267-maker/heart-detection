@@ -256,6 +256,10 @@ def activate(exp_id: str) -> dict:
         e = _get(s, exp_id)
         if e.kind != "cnn" or e.status != "completed":
             raise HTTPException(400, "Only completed CNN experiments can be activated")
+        # inference skips experiments whose checkpoint is gone, so activating one would
+        # report success while a different model keeps serving predictions
+        if not e.checkpoint_path or not trainer.resolve_path(e.checkpoint_path).is_file():
+            raise HTTPException(409, f"Model file for experiment {exp_id} is missing; it cannot be activated")
     db.set_setting("active_experiment_id", exp_id)
     return {"active": exp_id}
 

@@ -12,5 +12,6 @@ export default defineConfig({
     proxy: { "/api": { target: backend, changeOrigin: true } },
   },
   preview: { port: 4173, proxy: { "/api": { target: backend, changeOrigin: true } } },
-  build: { chunkSizeWarningLimit: 4000 },
+  // Plotly (about 4.7 MB) lives in its own lazily loaded chunk; only chart pages fetch it.
+  build: { chunkSizeWarningLimit: 5000 },
 });

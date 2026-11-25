@@ -31,7 +31,8 @@ def active_experiment_id() -> str | None:
     with db.session() as s:
         if exp_id:
             exp = s.get(db.Experiment, exp_id)
-            if exp and exp.status == "completed" and exp.kind == "cnn" and exp.checkpoint_path:
+            if (exp and exp.status == "completed" and exp.kind == "cnn" and exp.checkpoint_path
+                    and trainer.resolve_path(exp.checkpoint_path).exists()):
                 return exp_id
         # fallback: best completed CNN by validation macro-F1 (validation, never test)
         best, best_f1 = None, -1.0
@@ -49,14 +50,27 @@ def _load(exp_id: str):
         if exp is None or exp.kind != "cnn" or not exp.checkpoint_path:
             raise NoModel(f"Experiment {exp_id} has no CNN checkpoint")
         path = exp.checkpoint_path
-    model, scaler, ck = trainer.load_checkpoint(path)
+    file = trainer.resolve_path(path)
+    if not file.is_file():
+        raise NoModel(f"Model file for experiment {exp_id} is missing ({file}). Restore it from "
+                      "git (models/<id>/model.pt) or train a new model in the Model Laboratory.")
+    try:
+        model, scaler, ck = trainer.load_checkpoint(path)
+    except Exception as exc:  # noqa: BLE001 - corrupt/incompatible file -> clear message
+        raise NoModel(f"Model file for experiment {exp_id} could not be loaded ({file}): "
+                      f"{type(exc).__name__}: {exc}") from exc
+    trained_hash = ck.get("pipeline_hash") or config.pipeline_hash(ck.get("pipeline"))
+    if trained_hash != config.pipeline_hash():
+        raise NoModel(f"Experiment {exp_id} was trained with a different preprocessing pipeline "
+                      "than the current beat set; retrain it before using it for inference.")
     return model, scaler, ck
 
 
 def get_model(exp_id: str | None = None):
     exp_id = exp_id or active_experiment_id()
     if not exp_id:
-        raise NoModel("No trained CNN is available yet. Train one in the Model Laboratory.")
+        raise NoModel("No trained CNN is available yet (or its models/<id>/model.pt file is "
+                      "missing). Train one in the Model Laboratory.")
     model, scaler, ck = _load(exp_id)
     return exp_id, model, scaler, ck
 
@@ -145,8 +159,10 @@ def explain_beat(record: str, beat_index: int, method: str, target: str | None =
     x, rr = D.prepare_inputs(w, rr_raw, scaler)
     if target is None:
         t = int(trainer.predict_proba(model, x, rr)[0].argmax())
-    else:
+    elif target in cfg["classes"]:
         t = cfg["classes"].index(target)
+    else:
+        raise ValueError(f"target must be one of {cfg['classes']}")
     out = attribution.explain(model, x[0, 0], rr[0], t, method)
     out["target_class"] = cfg["classes"][t]
     out["rr_features"] = beats.RR_FEATURES
@@ -157,7 +173,10 @@ def sanity_check(record: str, beat_index: int, exp_id: str | None = None) -> dic
     exp_id, model, scaler, ck = get_model(exp_id)
     cfg = ck["config"]
     segs, meta, rows = _record_rows(record)
-    i = int(rows[(meta.iloc[rows]["beat_index"] == beat_index).to_numpy()][0])
+    match = rows[(meta.iloc[rows]["beat_index"] == beat_index).to_numpy()]
+    if len(match) == 0:
+        raise KeyError(f"Beat {beat_index} not found in record {record}")
+    i = int(match[0])
     w = D.windows(segs, np.array([i]), ck["pipeline"], cfg["window_pre"], cfg["window_post"])
     rr_raw = meta.iloc[i][beats.RR_FEATURES].to_numpy(np.float64)[None, :]
     x, rr = D.prepare_inputs(w, rr_raw, scaler)

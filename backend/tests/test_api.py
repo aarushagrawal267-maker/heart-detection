@@ -141,3 +141,52 @@ def test_training_can_be_disabled(client, monkeypatch):
     monkeypatch.setenv("QRS_ALLOW_TRAINING", "false")
     r = client.post("/api/experiments", json={"kind": "cnn", "config": {}, "start": False})
     assert r.status_code == 403
+
+
+BUNDLED = "20261114-200900-e49e"    # the CNN chosen in models/selection.json
+
+
+def test_bundled_model_serves_predictions_and_bad_inputs_get_clear_errors(client, temp_store):
+    """The committed checkpoint loads and predicts; bad inputs and a lost model file give 4xx, not 500."""
+    import json
+    import shutil
+
+    from app import config
+    from app.db import models as db
+    from app.inference import service
+    from app.training.registry import import_all
+
+    src = config.ROOT / "models" / BUNDLED
+    dst = config.MODELS_DIR / BUNDLED
+    dst.mkdir()
+    shutil.copy(src / "model.pt", dst / "model.pt")
+    rec = json.loads((src / "experiment.json").read_text(encoding="utf-8"))
+    rec["experiment"]["checkpoint_path"] = str(dst / "model.pt")
+    (dst / "experiment.json").write_text(json.dumps(rec), encoding="utf-8")
+    assert import_all() == 1
+    db.set_setting("active_experiment_id", BUNDLED)
+
+    r = client.post("/api/inference/beat", json={"record": "100", "beat_index": 3, "explain": None})
+    assert r.status_code == 200, r.text
+    beat = r.json()
+    assert beat["experiment_id"] == BUNDLED and beat["reference"]["aami"] == "N"
+    assert beat["prediction"]["class"] in ["N", "S", "V", "F"]
+    assert abs(sum(beat["prediction"]["scores"].values()) - 1) < 1e-3
+
+    assert client.post("/api/inference/beat", json={"record": "100", "beat_index": 10**6}).status_code == 404
+    assert client.post("/api/inference/beat", json={"record": "nope", "beat_index": 1}).status_code == 404
+    assert client.get("/api/explain/sanity?record=100&beat_index=999999").status_code == 404
+    assert client.get("/api/explain/sanity?record=nope&beat_index=1").status_code == 404
+    r = client.post("/api/explain", json={"record": "100", "beat_index": 3, "target": "Z"})
+    assert r.status_code == 400 and "target" in r.json()["detail"]
+
+    (dst / "model.pt").unlink()
+    service.clear_cache()
+    r = client.post("/api/inference/beat", json={"record": "100", "beat_index": 3,
+                                                 "experiment_id": BUNDLED})
+    assert r.status_code == 409 and "missing" in r.json()["detail"]
+    r = client.post("/api/inference/beat", json={"record": "100", "beat_index": 3})
+    assert r.status_code == 409 and "No trained CNN" in r.json()["detail"]
+    assert client.get("/api/models/active").json() is None
+    r = client.post(f"/api/experiments/{BUNDLED}/activate")
+    assert r.status_code == 409 and "missing" in r.json()["detail"]

@@ -1,0 +1,55 @@
+name: Linux setup / tests / start / e2e
+
+on:
+  push:
+    branches: ["claude/**", "main"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: setup.sh (CPU PyTorch, dataset download + verification, npm ci)
+        run: ./setup.sh
+      - name: Backend tests (pytest, real dataset)
+        working-directory: backend
+        run: ../.venv/bin/python -m pytest -q
+      - name: Frontend unit tests (Vitest)
+        working-directory: frontend
+        run: npm test
+      - name: Frontend production build (tsc + vite)
+        working-directory: frontend
+        run: npm run build
+      - name: start.sh in the background + health checks
+        run: |
+          nohup ./start.sh > start.out 2>&1 &
+          for i in $(seq 1 120); do
+            if curl -fsS http://127.0.0.1:5173/api/health >/dev/null 2>&1; then break; fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:8000/api/health
+          curl -fsS -o /dev/null http://127.0.0.1:8000/docs
+          curl -fsS -o /dev/null http://127.0.0.1:5173/api/overview
+      - name: End-to-end tests (Playwright)
+        working-directory: frontend
+        run: |
+          npx playwright install --with-deps chromium
+          npm run e2e
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-run-logs
+          path: |
+            .run/
+            start.out
+          include-hidden-files: true

@@ -16,6 +16,8 @@ from pathlib import Path
 from typing import Callable
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from .. import config
 
@@ -35,8 +37,21 @@ def required_files() -> list[str]:
     return [f"{r}.{e}" for r in config.RECORDS for e in REQUIRED_EXT]
 
 
+def make_session(retries: int = 5, backoff: float = 1.0) -> requests.Session:
+    """HTTP session that retries transient PhysioNet/proxy errors (429, 5xx, resets)."""
+    retry = Retry(total=retries, connect=retries, read=retries, status=retries,
+                  backoff_factor=backoff, status_forcelist=(429, 500, 502, 503, 504),
+                  allowed_methods=frozenset({"GET", "HEAD"}), raise_on_status=False)
+    s = requests.Session()
+    adapter = HTTPAdapter(max_retries=retry)
+    s.mount("https://", adapter)
+    s.mount("http://", adapter)
+    s.headers.setdefault("User-Agent", "qrs-atlas/1.0 (research dataset downloader)")
+    return s
+
+
 def fetch_checksums(session: requests.Session | None = None) -> dict[str, str]:
-    s = session or requests.Session()
+    s = session or make_session()
     r = s.get(config.DATASET_FILES_URL + "SHA256SUMS.txt", timeout=60)
     r.raise_for_status()
     out = {}
@@ -59,7 +74,7 @@ def download(progress: Callable[[str, float], None] | None = None, force: bool =
     progress = progress or (lambda stage, frac: None)
     raw = config.RAW_DIR
     raw.mkdir(parents=True, exist_ok=True)
-    session = requests.Session()
+    session = make_session()
     progress("checksums", 0.0)
     sums = fetch_checksums(session)
     (raw / "SHA256SUMS.txt").write_text(
