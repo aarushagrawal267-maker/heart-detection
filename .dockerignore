@@ -13,3 +13,7 @@ models/scratch
 models/*/train.log
 models/*/model.joblib
 *.log
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
