@@ -112,7 +112,7 @@ export default function Overview() {
                 ))}
                 <p className="pt-1 text-2xs leading-relaxed text-fg-dim">
                   Most Q beats are paced beats from records 102, 104, 107 and 217, which are excluded from training and
-                  evaluation. Accuracy alone is misleading: predicting N for every beat scores about 89%.
+                  evaluation. Accuracy alone is misleading: on the 21 held-out test subjects, predicting N for every beat scores 88.7%.
                 </p>
               </div>
             </Panel>
@@ -137,6 +137,9 @@ export default function Overview() {
                   </div>
                   {am.test && (
                     <div>
+                      <p className="mb-2 text-2xs leading-relaxed text-fg-dim">
+                        Held-out = 21 test subjects the model never saw (inter-patient split, subject-corrected DS1/DS2).
+                      </p>
                       <div className="label mb-2">Held-out F1 by class</div>
                       <div className="grid grid-cols-4 gap-2">
                         {am.classes.map((c) => (

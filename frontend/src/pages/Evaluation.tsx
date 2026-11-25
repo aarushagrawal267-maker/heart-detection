@@ -98,7 +98,8 @@ export default function Evaluation() {
       {shown === "test" && (
         <Note tone="safety">
           Held-out test subjects: never used for training, early stopping or model selection. These are the numbers that estimate generalisation to new
-          patients — within the limits of MIT-BIH (1970s Holter recordings, 21 test subjects).
+          patients — within the limits of MIT-BIH (1970s Holter recordings, 21 test subjects). Split: inter-patient (subject-corrected DS1/DS2), so these
+          numbers are not comparable with papers that split beats from the same patients between training and test.
         </Note>
       )}
 

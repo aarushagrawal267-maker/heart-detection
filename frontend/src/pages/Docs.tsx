@@ -42,7 +42,7 @@ export default function Docs() {
           <h2 id="ecg">ECG fundamentals</h2>
           <p>
             An electrocardiogram records the heart's electrical activity at the body surface. Each heartbeat produces a characteristic sequence: the
-            <strong> P wave</strong> (atrial depolarisation), the <strong>QRS complex</strong> (ventricular depolarisation, normally 80–120 ms) and the
+            <strong> P wave</strong> (atrial depolarisation), the <strong>QRS complex</strong> (ventricular depolarisation, normally shorter than 120 ms) and the
             <strong> T wave</strong> (ventricular repolarisation). The interval between successive R peaks — the <strong>RR interval</strong> — reflects heart
             rate and rhythm.
           </p>
@@ -149,8 +149,8 @@ export default function Docs() {
           </p>
           <p>
             Within the training pool, subjects are dealt into five folds (201 and 202 always together) so that the rare S, V and F beats are spread as evenly as
-            subject boundaries allow. One fold is the validation set used for early stopping and model selection. 5-fold cross-validation is available. Held-out test
-            subjects are evaluated only by an explicit, logged action.
+            subject boundaries allow. One fold is the validation set used for early stopping. The reported model was selected by its mean macro F1 over all five
+            cross-validation folds of the training pool. Held-out test subjects are evaluated only by an explicit, logged action.
           </p>
           <p>Automated tests verify: no subject or recording overlap between partitions or folds; 201 and 202 share a subject, partition and fold; every segment inherits the correct identifiers.</p>
           <p>
@@ -163,7 +163,7 @@ export default function Docs() {
             <li><strong>Integrated Gradients</strong> (Sundararajan et al., 2017): integrates gradients along a path from a flat-line baseline (and mean RR) to the input. Attributions sum to the change in class score, which the UI reports as a completeness check.</li>
             <li><strong>Grad-CAM</strong> (Selvaraju et al., 2017), adapted to 1D on the last convolutional layer.</li>
             <li><strong>Saliency</strong>: magnitude of the input gradient.</li>
-            <li><strong>Occlusion</strong>: drop in class probability when a 40 ms window is flattened.</li>
+            <li><strong>Occlusion</strong>: drop in the class score (softmax output) when a 40 ms window is flattened.</li>
             <li><strong>Sanity check</strong> (Adebayo et al., 2018): compares explanations with those of a randomly-initialised network; a low correlation indicates the map depends on what the model learned.</li>
           </ul>
           <p>These maps show what the model's score is sensitive to. They are analytical visualisations, not evidence that the model reasons like a cardiologist.</p>
@@ -171,10 +171,12 @@ export default function Docs() {
           <h2 id="limitations">Limitations</h2>
           <ul>
             <li><strong>Not a medical device.</strong> No clinical validation; outputs must not be used for diagnosis, monitoring or treatment decisions.</li>
+            <li><strong>Beats, not conditions</strong>: the model labels single beats as N, S, V or F. It does not identify rhythms or diagnoses and has never been compared with doctors reading the same recordings.</li>
+            <li><strong>Sensitivity is not the whole story</strong>: on the held-out subjects the selected CNN finds 93.2% of V beats, but only 54.3% of its V predictions are correct, and it finds 12.6% of S beats.</li>
             <li><strong>Small, old, single-centre data</strong>: 47 subjects recorded 1975–1979 at Boston's Beth Israel Hospital on analogue Holter tapes. Performance will not transfer automatically to other devices, leads or populations.</li>
             <li><strong>Few test patients</strong>: 21 subjects. Minority classes are concentrated in a handful of patients — e.g. record 232 holds about three quarters of all test S beats — so per-class results depend heavily on individual patients and confidence intervals are wide.</li>
             <li><strong>Inter-patient generalisation is hard</strong>: training subjects are fitted almost perfectly while validation performance is much lower. S and F beats are recognised poorly; this is consistent with the literature and reported, not hidden.</li>
-            <li><strong>Reference positions</strong>: the principal experiment assumes perfect beat detection; RR features come from expert positions.</li>
+            <li><strong>Reference positions</strong>: the principal experiment assumes perfect beat detection; RR features come from expert positions. Detector errors are measured separately and are not included in the headline metrics.</li>
             <li><strong>Single lead</strong> (MLII). Q beats are not learned. VF/flutter episodes are not beat-classified.</li>
             <li>Model scores are softmax outputs, not calibrated probabilities.</li>
           </ul>

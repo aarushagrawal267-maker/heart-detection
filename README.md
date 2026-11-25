@@ -43,9 +43,13 @@ project**, evaluated on patients the model has never seen.
 
 ## Results on held-out patients
 
-21 test subjects, never used for training, early stopping or model selection. The model was
-selected by 5-fold subject-grouped cross-validation on the training pool. Full tables, per-patient
-breakdown and the test-access log are in [docs/RESULTS.md](docs/RESULTS.md).
+**Evaluation protocol.** Inter-patient (subject-level) split: the de Chazal et al. (2004) DS1/DS2
+protocol, corrected so that records 201 and 202 (same person) are both on the training side. The test
+set is 21 subjects (47,548 beats from MIT-BIH records 100–234, lead MLII, paced records excluded). No
+test subject was used for training, early stopping or model selection. The model was selected by
+5-fold subject-grouped cross-validation on the training pool. Task: 4-class beat classification
+(AAMI N, S, V, F) at the expert-annotated beat positions; metrics are pooled over all test beats.
+Full tables, per-patient breakdown and the test-access log are in [docs/RESULTS.md](docs/RESULTS.md).
 
 | Model | Macro-F1 (95% CI, patient bootstrap) | Accuracy | S sensitivity | V sensitivity |
 |---|---|---|---|---|
@@ -54,10 +58,18 @@ breakdown and the test-access log are in [docs/RESULTS.md](docs/RESULTS.md).
 | Logistic regression (RR only) | 0.405 (0.336–0.456) | 76.1% | 10.9% | 69.9% |
 | Majority class ("always N") | 0.235 | 88.7% | 0% | 0% |
 
-The CNN generalises best overall and detects ventricular beats well. Supraventricular (S) and
-fusion (F) beats remain hard in unseen patients. One test subject (record 232) holds 1,382 of the
-1,782 S beats, and only 1.3% of them are detected. Across the other test subjects, S sensitivity is
-51.7%. These are research results on a 1970s database, not evidence of clinical performance.
+The CNN has the highest macro-F1 of the four models. It finds 93.2% of ventricular (V) beats, but
+only 54.3% of its V predictions are correct (positive predictivity): 2,031 normal beats were labelled
+V. Supraventricular (S) and fusion (F) beats remain hard in unseen patients. One test subject (record
+232) holds 1,382 of the 1,782 S beats, and only 1.3% of them are detected. In a post-hoc look at the
+other 20 test subjects, S sensitivity is 51.7% (207 of 400); this is a descriptive subgroup figure,
+not a pre-specified result.
+
+Papers that split MIT-BIH by heartbeat rather than by patient (an intra-patient split) often report
+over 99% accuracy, because beats from the same person appear in both training and test data (see
+the survey by Luz et al., 2016, in [docs/REFERENCES.md](docs/REFERENCES.md)). Those figures are not
+comparable with the ones above. These are research results on recordings made in
+1975–1979, not evidence of clinical performance.
 
 ## Application pages
 
@@ -208,10 +220,16 @@ cd frontend && npm run e2e            # Playwright (needs backend + frontend run
 
 ## Limitations
 
-- Trained and tested on one 1970s–80s database (48 recordings, 47 people); results may not
-  transfer to other devices, leads, populations or wearables.
-- Supraventricular (S) and fusion (F) beats are poorly detected in unseen patients (see results above).
-- It classifies individual beats; it does not diagnose rhythms or conditions and has no clinical validation.
+- Trained and tested on one database recorded in 1975–1979 (48 recordings, 47 people, one Boston
+  hospital); results may not transfer to other devices, leads, populations or wearables.
+- Only 21 test subjects, so the confidence intervals are wide and minority-class results depend on
+  a few patients.
+- Supraventricular (S) and fusion (F) beats are poorly detected in unseen patients, and about half of
+  the CNN's V predictions are false positives (see results above).
+- The headline metrics use the expert-annotated beat positions. Errors from automatic R-peak detection
+  are measured separately and are not included in them.
+- It classifies individual beats; it does not diagnose rhythms or conditions, has no clinical
+  validation and has never been compared with doctors reading the same ECGs.
 - Full discussion: [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
 ## Licence

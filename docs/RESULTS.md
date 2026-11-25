@@ -35,6 +35,8 @@ Selected: **ECGNet CV - morphology + RR (weighted CE)** (`20261114-200900-e49e`)
 
 ## 3. Held-out test subjects (21 subjects, never used for training or selection)
 
+Protocol: inter-patient split (subject-corrected DS1/DS2), lead MLII, paced records excluded, 4-class beat classification (AAMI N, S, V, F) at the expert-annotated beat positions. Metrics are pooled over all test beats; confidence intervals resample subjects.
+
 ### Majority-class baseline (`20261114-194144-e842`)
 
 - Beats: 47,548 from records 100, 103, 105, 111, 113, 117, 121, 123, 200, 210, 212, 213, 214, 219, 221, 222, 228, 231, 232, 233, 234
@@ -135,7 +137,7 @@ Per-patient sensitivity for the minority classes (subjects with ≥20 S or F bea
 | S232 | 1382 | 1.3% | 0 | — | 0 | — |
 | S234 | 50 | 6.0% | 0 | — | 3 | 100.0% |
 
-Subject S232 contributes 1,382 of the 1,782 test S beats, and only 1.3% of them are detected. Excluding that one subject, S sensitivity is 51.7% (207 of 400). The overall S figure is therefore dominated by a single patient.
+Subject S232 contributes 1,382 of the 1,782 test S beats, and only 1.3% of them are detected. Excluding that one subject, S sensitivity is 51.7% (207 of 400). This is a post-hoc, descriptive subgroup figure, not a pre-specified result. The overall S figure is therefore dominated by a single patient.
 
 ## 4. Test-set access log
 
@@ -153,4 +155,4 @@ Subject S232 contributes 1,382 of the 1,782 test S beats, and only 1.3% of them 
 - Accuracy is dominated by N beats; macro-F1 and per-class sensitivity and precision are the meaningful figures.
 - S and F beats are the hard classes in inter-patient evaluation, as in the published literature. Test S beats are dominated by one subject (record 232), and training F beats by one subject (record 208).
 - Confidence intervals resample patients, so they reflect between-patient variability. They are wide because only 21 test subjects exist.
-- The split is the subject-corrected DS1/DS2 protocol (record 202 moved to training), so the numbers are not directly comparable with papers that used the original split.
+- The split is the subject-corrected DS1/DS2 protocol (record 202 moved to training), so the numbers are not directly comparable with papers that used the original split. Results from intra-patient (random beat-level) splits, often above 99% accuracy, are not comparable at all, because the same patients' beats appear in training and test.

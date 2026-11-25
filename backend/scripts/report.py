@@ -55,7 +55,10 @@ def main() -> None:
             L += ["", f"Selected: **{selection['selected']['name']}** (`{selection['selected']['id']}`).", ""]
 
         tested = [e for e in exps if any(ev.partition == "test" for ev in e.evaluations)]
-        L += ["## 3. Held-out test subjects (21 subjects, never used for training or selection)", ""]
+        L += ["## 3. Held-out test subjects (21 subjects, never used for training or selection)", "",
+              "Protocol: inter-patient split (subject-corrected DS1/DS2), lead MLII, paced records excluded, "
+              "4-class beat classification (AAMI N, S, V, F) at the expert-annotated beat positions. "
+              "Metrics are pooled over all test beats; confidence intervals resample subjects.", ""]
         if not tested:
             L += ["No held-out evaluation has been run yet.", ""]
         for e in tested:
@@ -97,7 +100,8 @@ def main() -> None:
                 L += ["", f"Subject {top['subject']} contributes {top['S_support']:,} of the "
                       f"{sum(r['S_support'] for r in s_rows):,} test S beats, and only {p(top['S_recall'])} of them are detected. "
                       f"Excluding that one subject, S sensitivity is {p((tp_all - tp_top) / rest)} "
-                      f"({tp_all - tp_top} of {rest}). The overall S figure is therefore dominated by a single patient.", ""]
+                      f"({tp_all - tp_top} of {rest}). This is a post-hoc, descriptive subgroup figure, not a pre-specified result. "
+                      "The overall S figure is therefore dominated by a single patient.", ""]
         log = s.query(db.TestAccess).order_by(db.TestAccess.timestamp).all()
         L += ["## 4. Test-set access log", "", "| When (UTC) | Experiment | Purpose |", "|---|---|---|"]
         L += [f"| {t.timestamp:%Y-%m-%d %H:%M} | `{t.experiment_id}` | {t.purpose} |" for t in log] or ["| — | — | — |"]
@@ -111,7 +115,8 @@ def main() -> None:
               "dominated by one subject (record 232), and training F beats by one subject (record 208).",
               "- Confidence intervals resample patients, so they reflect between-patient variability. They are wide because only 21 test subjects exist.",
               "- The split is the subject-corrected DS1/DS2 protocol (record 202 moved to training), so the numbers are not directly comparable "
-              "with papers that used the original split.", ""]
+              "with papers that used the original split. Results from intra-patient (random beat-level) splits, often above 99% accuracy, "
+              "are not comparable at all, because the same patients' beats appear in training and test.", ""]
     out = config.ROOT / "docs" / "RESULTS.md"
     out.write_text("\n".join(L), encoding="utf-8")
     print("wrote", out)
