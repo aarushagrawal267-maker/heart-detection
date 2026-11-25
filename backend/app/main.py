@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import base64
+import logging
 import os
 import secrets
 from pathlib import Path
@@ -14,6 +15,8 @@ from fastapi.staticfiles import StaticFiles
 from . import config
 from .api import dataset, models_api, overview, records
 from .db import models as db
+
+log = logging.getLogger("uvicorn.error")   # shows up in the uvicorn console
 
 DESCRIPTION = """
 Patient-independent ECG heartbeat classification on the MIT-BIH Arrhythmia Database
@@ -74,6 +77,14 @@ def _startup() -> None:
     db.engine()
     from .training.registry import import_all
     import_all()
+    # Load the active CNN now so a missing or broken model file is reported at start-up
+    # (and the first prediction is not slowed by loading it).
+    from .inference import service
+    try:
+        exp_id, *_ = service.get_model()
+        log.info("Inference model ready: experiment %s", exp_id)
+    except service.NoModel as exc:
+        log.warning("No inference model available: %s", exc)
 
 
 # ---- production: serve the built frontend from the same origin -------------------------
