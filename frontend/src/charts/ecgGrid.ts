@@ -67,9 +67,9 @@ export function drawEcgGrid(u: uPlot, opts: { xUnit?: "s" | "ms" } = {}) {
 }
 
 export const AXIS_STYLE = {
-  stroke: "#5F6A7A",
+  stroke: "#7E8899",
   grid: { show: false },
   ticks: { show: true, stroke: "#273241", width: 1, size: 4 },
-  font: `10px "JetBrains Mono", ui-monospace, monospace`,
-  labelFont: `10px "JetBrains Mono", ui-monospace, monospace`,
+  font: `11px "JetBrains Mono", ui-monospace, monospace`,
+  labelFont: `11px "JetBrains Mono", ui-monospace, monospace`,
 };

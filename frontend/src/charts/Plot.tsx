@@ -4,11 +4,11 @@ import Plotly from "plotly.js-dist-min";
 export const PLOT_LAYOUT: Partial<Plotly.Layout> = {
   paper_bgcolor: "rgba(0,0,0,0)",
   plot_bgcolor: "rgba(0,0,0,0)",
-  font: { family: "Inter, system-ui, sans-serif", size: 11, color: "#8B95A5" },
+  font: { family: "Inter, system-ui, sans-serif", size: 11, color: "#9AA3B2" },
   margin: { l: 48, r: 12, t: 12, b: 40 },
-  xaxis: { gridcolor: "#1A212B", zerolinecolor: "#273241", linecolor: "#273241", tickfont: { family: "JetBrains Mono, monospace", size: 10 } },
-  yaxis: { gridcolor: "#1A212B", zerolinecolor: "#273241", linecolor: "#273241", tickfont: { family: "JetBrains Mono, monospace", size: 10 } },
-  legend: { orientation: "h", y: -0.22, font: { size: 10 } },
+  xaxis: { gridcolor: "#1A212B", zerolinecolor: "#273241", linecolor: "#273241", tickfont: { family: "JetBrains Mono, monospace", size: 11 } },
+  yaxis: { gridcolor: "#1A212B", zerolinecolor: "#273241", linecolor: "#273241", tickfont: { family: "JetBrains Mono, monospace", size: 11 } },
+  legend: { orientation: "h", y: -0.22, font: { size: 11 } },
   hoverlabel: { bgcolor: "#131922", bordercolor: "#2D3847", font: { family: "JetBrains Mono, monospace", size: 11, color: "#E4E8EE" } },
 };
 
