@@ -216,7 +216,7 @@ export default function Lab() {
                     <span data-testid="training-message">{live.exp.message}</span>
                     <span className="num">{Math.round(live.exp.progress * 100)}%</span>
                   </div>
-                  <Bar value={live.exp.progress} color="#2BB3A3" />
+                  <Bar value={live.exp.progress} color="#9AA3B2" />
                 </div>
                 {live.exp.error && <pre className="max-h-40 overflow-auto rounded-lg bg-ink-950 p-3 text-2xs text-trace">{live.exp.error}</pre>}
                 {live.exp.kind === "cnn" && live.epochs.length > 0 && (
@@ -226,10 +226,10 @@ export default function Lab() {
                   </div>
                 )}
                 {live.exp.status === "completed" && (
-                  <div className="flex flex-wrap items-center gap-3 rounded-lg border border-teal/30 bg-teal/5 p-3 text-xs">
+                  <div className="flex flex-wrap items-center gap-3 rounded-lg border border-line-strong bg-ink-750 p-3 text-xs">
                     <span className="text-fg">
                       Completed in {duration(live.exp.duration_s)} · validation macro F1{" "}
-                      <span className="num text-teal">{num(live.exp.summary.val_macro_f1 ?? null)}</span>
+                      <span className="num text-fg">{num(live.exp.summary.val_macro_f1 ?? null)}</span>
                     </span>
                     <Link to={`/evaluation?exp=${live.exp.id}`} className="btn">
                       View evaluation

@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test.describe("QRS Atlas end-to-end (real data)", () => {
   test("overview shows real dataset figures and the research notice", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: "ECG Intelligence Overview" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Overview" })).toBeVisible();
     const stats = page.getByTestId("overview-stats");
     await expect(stats).toContainText("48");
     await expect(stats).toContainText("109,444");

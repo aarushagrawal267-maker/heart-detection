@@ -63,7 +63,7 @@ export default function Dataset() {
             <Stat label="Subjects" value={st.n_subjects} sub="201 + 202 = one subject" />
             <Stat label="Sampling rate" value="360 Hz" sub="11-bit, ±5 mV" />
             <Stat label="Beat segments" value={int(st.n_segments)} sub={`${mapping.data?.n_boundary_excluded ?? "…"} excluded at boundaries`} />
-            <Stat label="Files verified" value={String((prov.data?.n_files_verified as number) ?? "—")} sub="SHA-256 vs PhysioNet" accent="#2BB3A3" />
+            <Stat label="Files verified" value={String((prov.data?.n_files_verified as number) ?? "—")} sub="SHA-256 vs PhysioNet" />
           </div>
 
           <Panel
@@ -111,7 +111,7 @@ export default function Dataset() {
                     {rows.map((r) => (
                       <tr key={r.record}>
                         <td>
-                          <Link to={`/explorer?record=${r.record}`} className="num font-medium text-fg hover:text-teal">
+                          <Link to={`/explorer?record=${r.record}`} className="num font-medium text-fg underline-offset-2 hover:underline">
                             {r.record}
                           </Link>
                         </td>
@@ -131,7 +131,7 @@ export default function Dataset() {
                         ))}
                         <td className="num text-right">{r.n_non_beat}</td>
                         <td className="num text-right">
-                          <span style={{ color: r.quality.mean_score > 0.7 ? "#2BB3A3" : r.quality.mean_score > 0.45 ? "#E8A33D" : "#F2555A" }}>
+                          <span style={{ color: r.quality.mean_score > 0.7 ? "#4CC38A" : r.quality.mean_score > 0.45 ? "#E8A33D" : "#F2555A" }}>
                             {num(r.quality.mean_score, 2)}
                           </span>
                         </td>
@@ -213,7 +213,7 @@ export default function Dataset() {
                           className="num rounded-md border px-1.5 py-0.5 text-2xs"
                           style={{
                             borderColor: r === "201" || r === "202" ? "#E8A33D88" : "#273241",
-                            color: r === "201" || r === "202" ? "#E8A33D" : "#8B95A5",
+                            color: r === "201" || r === "202" ? "#E8A33D" : "#9AA3B2",
                           }}
                           title={r === "201" || r === "202" ? "Same subject as record " + (r === "201" ? "202" : "201") : undefined}
                         >
@@ -233,7 +233,7 @@ export default function Dataset() {
                 <div className="grid gap-1.5 sm:grid-cols-2">
                   {splits.data.leakage.checks.map((c) => (
                     <div key={c.name} className="flex items-center gap-2 text-2xs text-fg-muted">
-                      {c.passed ? <CheckCircle2 className="h-3.5 w-3.5 text-teal" /> : <XCircle className="h-3.5 w-3.5 text-trace" />}
+                      {c.passed ? <CheckCircle2 className="h-3.5 w-3.5 text-ok" /> : <XCircle className="h-3.5 w-3.5 text-trace" />}
                       {c.name}
                     </div>
                   ))}
@@ -270,7 +270,7 @@ export default function Dataset() {
                 <dl className="grid grid-cols-[120px_1fr] gap-x-3 gap-y-2 text-xs">
                   <dt className="text-fg-dim">Source</dt>
                   <dd>
-                    <a href={String(prov.data.source_url)} className="text-teal hover:underline" target="_blank" rel="noreferrer">
+                    <a href={String(prov.data.source_url)} className="link" target="_blank" rel="noreferrer">
                       {String(prov.data.source_url)}
                     </a>
                   </dd>
