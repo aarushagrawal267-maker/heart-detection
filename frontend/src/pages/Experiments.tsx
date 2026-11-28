@@ -102,7 +102,7 @@ export default function Experiments() {
       </Panel>
 
       {selected.length >= 2 && (
-        <Panel title={<span className="flex items-center gap-2"><GitCompare className="h-4 w-4 text-teal" /> Comparison</span>} bodyClass="p-0" testId="comparison">
+        <Panel title={<span className="flex items-center gap-2"><GitCompare className="h-4 w-4 text-fg-dim" /> Comparison</span>} bodyClass="p-0" testId="comparison">
           {cmp.data ? (
             <div className="overflow-x-auto">
               <table className="table">

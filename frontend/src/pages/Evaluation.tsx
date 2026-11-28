@@ -269,7 +269,7 @@ export default function Evaluation() {
                 .map((e) => (
                   <tr key={e.id} className={e.id === expId ? "bg-ink-750" : ""}>
                     <td>
-                      <button className="text-left text-fg hover:text-teal" onClick={() => setExp(e.id)}>
+                      <button className="text-left text-fg underline-offset-2 hover:underline" onClick={() => setExp(e.id)}>
                         {e.name}
                       </button>
                     </td>

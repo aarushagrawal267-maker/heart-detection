@@ -50,7 +50,7 @@ export function ConfusionMatrix({ metrics, testId }: { metrics: Metrics; testId?
                       <td
                         key={j}
                         className="num h-12 w-16 rounded-md border border-line-soft text-center text-xs sm:w-20"
-                        style={{ background: bg, color: frac > 0.45 ? "#E4E8EE" : "#8B95A5" }}
+                        style={{ background: bg, color: frac > 0.45 ? "#E4E8EE" : "#9AA3B2" }}
                         title={`reference ${classes[i]} → predicted ${classes[j]}: ${v} (${pct(frac)})`}
                       >
                         {mode === "row" ? (total ? pct(frac, frac < 0.1 ? 1 : 0) : "—") : int(v)}
@@ -124,7 +124,7 @@ export function ScoreBars({ scores, highlight }: { scores: Record<string, number
         <div key={c}>
           <div className="mb-1 flex items-center justify-between text-2xs">
             <span className="flex items-center gap-2">
-              <span className="font-mono font-semibold" style={{ color: classColor(c) }}>
+              <span className="font-mono font-medium" style={{ color: classColor(c) }}>
                 {c}
               </span>
               <span className="text-fg-dim">{CLASS_NAMES[c]}</span>
@@ -133,8 +133,8 @@ export function ScoreBars({ scores, highlight }: { scores: Record<string, number
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-ink-600">
             <div
-              className="h-full rounded-full transition-all"
-              style={{ width: `${v * 100}%`, background: classColor(c), opacity: c === highlight ? 1 : 0.55 }}
+              className="h-full w-full origin-left transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{ transform: `scaleX(${Math.max(0, Math.min(1, v))})`, background: classColor(c), opacity: c === highlight ? 1 : 0.55 }}
             />
           </div>
         </div>
@@ -157,7 +157,7 @@ export function Headline({ metrics }: { metrics: Metrics }) {
       {items.map(([k, v]) => (
         <div key={k} className="bg-ink-800 px-3 py-2.5">
           <div className="label">{k}</div>
-          <div className="num mt-1 text-lg text-fg">{v}</div>
+          <div className="num mt-1 text-xl text-fg">{v}</div>
         </div>
       ))}
     </div>

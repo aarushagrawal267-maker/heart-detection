@@ -178,13 +178,13 @@ function drawLanes(u: uPlot, reference: EcgMarker[], predictions: PredMarker[] |
   const preds = (predictions ?? []).filter(visible);
   const dense = refs.length > width / (dpr * 14);
   ctx.save();
-  ctx.font = `${10 * dpr}px "JetBrains Mono", ui-monospace, monospace`;
+  ctx.font = `${11 * dpr}px "JetBrains Mono", ui-monospace, monospace`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
   // lane labels
   const laneY = top - (LANE_H / 2) * dpr - 2 * dpr;
-  ctx.fillStyle = "#5F6A7A";
+  ctx.fillStyle = "#7E8899";
   ctx.textAlign = "right";
   ctx.fillText("REF", left - 6 * dpr, laneY);
   if (predictions) ctx.fillText("CNN", left - 6 * dpr, top + height + (LANE_H / 2 + 5) * dpr);

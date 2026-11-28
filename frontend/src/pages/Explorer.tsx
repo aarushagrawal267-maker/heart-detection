@@ -308,7 +308,7 @@ export default function Explorer() {
                       <div className="h-1.5 overflow-hidden rounded-full bg-ink-600">
                         <div
                           className="h-full rounded-full"
-                          style={{ width: `${w.score * 100}%`, background: w.label === "good" ? "#2BB3A3" : w.label === "fair" ? "#E8A33D" : "#F2555A" }}
+                          style={{ width: `${w.score * 100}%`, background: w.label === "good" ? "#4CC38A" : w.label === "fair" ? "#E8A33D" : "#F2555A" }}
                         />
                       </div>
                       <span className="num text-fg-muted" title={`baseline ${pct(w.baseline_ratio)} · 60 Hz ${pct(w.powerline_ratio, 2)} · HF ${pct(w.hf_ratio)}`}>

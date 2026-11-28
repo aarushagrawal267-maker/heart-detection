@@ -70,14 +70,14 @@ export default function Classify() {
   return (
     <div className="space-y-5">
       <PageHeader
-        title="Heartbeat Classification Centre"
+        title="Beat classification"
         sub="Run the project's trained 1D CNN on one expert-annotated beat, compare its output with the reference label and inspect which parts of the waveform influenced the score."
         actions={<RecordPicker value={record} onChange={setRecord} />}
       />
       <ResearchNotice />
       {model.isSuccess && !model.data && (
         <Note tone="warn">
-          No trained CNN is available. <Link to="/lab" className="underline">Train one in the Model Laboratory</Link> first.
+          No trained CNN is available. <Link to="/lab" className="link">Train one in the Model Laboratory</Link> first.
         </Note>
       )}
 
@@ -95,7 +95,7 @@ export default function Classify() {
                   className="rounded-md border px-2 py-1 font-mono text-2xs transition-colors"
                   style={{
                     borderColor: filter === c ? (c === "all" ? "#2BB3A3" : classColor(c)) : "#212A36",
-                    color: c === "all" ? (filter === c ? "#2BB3A3" : "#8B95A5") : classColor(c),
+                    color: c === "all" ? (filter === c ? "#2BB3A3" : "#9AA3B2") : classColor(c),
                     background: filter === c ? "#171E28" : "transparent",
                   }}
                   disabled={c !== "all" && !counts[c]}
@@ -227,7 +227,7 @@ export default function Classify() {
                     </>
                   ) : result.agrees_with_reference ? (
                     <>
-                      <CheckCircle2 className="h-4 w-4 text-teal" />
+                      <CheckCircle2 className="h-4 w-4 text-ok" />
                       <span className="text-fg-muted">Prediction agrees with the expert annotation.</span>
                     </>
                   ) : (

@@ -61,12 +61,13 @@ export default function Minimap({ t, min, max, duration, range, onJump, marks = 
       ctx.fillRect(x0, 0, x1 - x0, height - 8);
       ctx.strokeStyle = "rgba(43,179,163,0.9)";
       ctx.strokeRect(x0 + 0.5, 0.5, x1 - x0 - 1, height - 9);
-      ctx.fillStyle = "#5F6A7A";
-      ctx.font = `9px "JetBrains Mono", monospace`;
+      ctx.fillStyle = "#7E8899";
+      ctx.font = `11px "JetBrains Mono", monospace`;
       ctx.textBaseline = "bottom";
       for (let s = 0; s <= duration; s += 300) {
         const x = sx(s);
-        ctx.fillText(clock(s, 0), Math.min(x + 2, w - 28), height);
+        const label = clock(s, 0);
+        ctx.fillText(label, Math.min(x + 2, w - ctx.measureText(label).width - 2), height);
       }
     };
     draw();

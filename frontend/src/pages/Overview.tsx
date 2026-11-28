@@ -44,7 +44,7 @@ export default function Overview() {
   return (
     <div className="space-y-5">
       <PageHeader
-        title="ECG Intelligence Overview"
+        title="Overview"
         sub="Heartbeat classification on real MIT-BIH recordings with a 1D convolutional network trained from scratch in this project, evaluated on patients it never saw during training."
         actions={
           <>
@@ -62,7 +62,7 @@ export default function Overview() {
       {!d.dataset.present ? (
         <Panel title="Dataset not downloaded">
           <Empty title="MIT-BIH Arrhythmia Database is not on this machine yet">
-            Go to the <Link to="/dataset" className="text-teal">Dataset Explorer</Link> to download (≈77 MB) and verify it
+            Go to the <Link to="/dataset" className="link">Dataset Explorer</Link> to download (≈77 MB) and verify it
             against PhysioNet's published SHA-256 checksums.
           </Empty>
         </Panel>
@@ -79,7 +79,6 @@ export default function Overview() {
             <Stat
               label="Held-out macro F1"
               value={am?.test ? num(am.test.macro_f1) : "—"}
-              accent={am?.test ? "#2BB3A3" : undefined}
               sub={am?.test ? `${int(am.test.n)} beats from unseen patients` : "not evaluated yet"}
             />
           </div>
@@ -132,7 +131,7 @@ export default function Overview() {
                     </div>
                     <div>
                       <div className="label">Held-out macro F1</div>
-                      <div className="num mt-1 text-xl text-teal">{am.test ? num(am.test.macro_f1) : "—"}</div>
+                      <div className="num mt-1 text-xl text-fg">{am.test ? num(am.test.macro_f1) : "—"}</div>
                     </div>
                   </div>
                   {am.test && (
@@ -156,7 +155,7 @@ export default function Overview() {
                 </div>
               ) : (
                 <Empty title="Train the 1D CNN">
-                  <Link to="/lab" className="text-teal">Open the Model Laboratory</Link> to train the network on real
+                  <Link to="/lab" className="link">Open the Model Laboratory</Link> to train the network on real
                   training-subject beats.
                 </Empty>
               )}
@@ -173,11 +172,11 @@ export default function Overview() {
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <div className="label">Val macro F1</div>
-                      <div className="num mt-1 text-lg">{num(d.latest_experiment.summary?.val_macro_f1 ?? null)}</div>
+                      <div className="num mt-1 text-xl">{num(d.latest_experiment.summary?.val_macro_f1 ?? null)}</div>
                     </div>
                     <div>
                       <div className="label">Train macro F1</div>
-                      <div className="num mt-1 text-lg text-fg-muted">{num(d.latest_experiment.summary?.train_macro_f1 ?? null)}</div>
+                      <div className="num mt-1 text-xl text-fg-muted">{num(d.latest_experiment.summary?.train_macro_f1 ?? null)}</div>
                     </div>
                   </div>
                   <div className="flex gap-2 pt-1">

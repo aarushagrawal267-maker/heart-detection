@@ -3,11 +3,11 @@ import clsx from "clsx";
 import {
   Activity,
   BookOpen,
-  BrainCircuit,
   Database,
   FlaskConical,
   Gauge,
   History,
+  Info,
   LayoutDashboard,
   Menu,
   ScanLine,
@@ -49,8 +49,8 @@ function Logo() {
         <path d="M3 18h7l2-4 3 10 4-17 3 11h7" fill="none" stroke="#F2555A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       <div className="leading-tight">
-        <div className="text-[14px] font-semibold tracking-tight text-fg">QRS Atlas</div>
-        <div className="text-2xs text-fg-dim">ECG signal intelligence</div>
+        <div className="text-sm font-medium text-fg">QRS Atlas</div>
+        <div className="text-2xs text-fg-dim">ECG beat workbench</div>
       </div>
     </div>
   );
@@ -64,7 +64,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       </div>
       {NAV.map((g) => (
         <div key={g.group}>
-          <div className="label mb-1.5 px-2.5">{g.group}</div>
+          <div className="label mb-2 px-2.5">{g.group}</div>
           <ul className="space-y-0.5">
             {g.items.map((it) => (
               <li key={it.to}>
@@ -74,7 +74,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                   onClick={onNavigate}
                   className={({ isActive }) =>
                     clsx(
-                      "group flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[13px] transition-colors",
+                      "group flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm transition-colors",
                       isActive ? "bg-ink-700 text-fg" : "text-fg-muted hover:bg-ink-750 hover:text-fg",
                     )
                   }
@@ -92,10 +92,10 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       ))}
       <div className="mt-auto rounded-lg border border-line bg-ink-850 p-3">
-        <div className="flex items-center gap-1.5 text-2xs font-semibold uppercase tracking-[0.08em] text-teal">
-          <BrainCircuit className="h-3.5 w-3.5" /> Research use only
+        <div className="flex items-center gap-2 text-xs font-medium text-fg-muted">
+          <Info className="h-3.5 w-3.5 text-fg-dim" /> Research use only
         </div>
-        <p className="mt-1.5 text-2xs leading-relaxed text-fg-dim">
+        <p className="mt-2 text-2xs leading-relaxed text-fg-dim">
           Not a medical device. Model outputs are research results, not diagnoses.
         </p>
       </div>
@@ -109,7 +109,7 @@ function StatusBar() {
   const health = useQuery({ queryKey: ["health"], queryFn: api.health, refetchInterval: 15000 });
   const chip = (ok: boolean | undefined, label: string, value: string) => (
     <span className="inline-flex items-center gap-1.5 rounded-md border border-line bg-ink-800 px-2 py-1 text-2xs">
-      <span className={clsx("h-1.5 w-1.5 rounded-full", ok === undefined ? "bg-fg-dim" : ok ? "bg-teal" : "bg-trace")} />
+      <span className={clsx("h-1.5 w-1.5 rounded-full", ok === undefined ? "bg-fg-dim" : ok ? "bg-ok" : "bg-trace")} />
       <span className="text-fg-dim">{label}</span>
       <span className="num text-fg-muted">{value}</span>
     </span>

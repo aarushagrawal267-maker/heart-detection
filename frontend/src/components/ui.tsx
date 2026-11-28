@@ -50,9 +50,9 @@ export function Stat({
   testId?: string;
 }) {
   return (
-    <div className="panel px-4 py-3.5" data-testid={testId}>
+    <div className="panel px-4 py-4" data-testid={testId}>
       <div className="label">{label}</div>
-      <div className="num mt-1.5 text-2xl font-medium tracking-tight" style={accent ? { color: accent } : undefined}>
+      <div className="num mt-2 text-2xl font-medium" style={accent ? { color: accent } : undefined}>
         {value}
       </div>
       {sub && <div className="mt-1 text-2xs text-fg-dim">{sub}</div>}
@@ -78,7 +78,7 @@ export function ClassChip({ cls, label, size = "sm" }: { cls: string | null | un
 }
 
 export function PartitionChip({ partition }: { partition: string }) {
-  const c = PARTITION_COLORS[partition] ?? "#5F6A7A";
+  const c = PARTITION_COLORS[partition] ?? "#7E8899";
   return (
     <span
       className="inline-flex items-center gap-1.5 rounded-md border px-1.5 py-0.5 text-2xs font-medium"
@@ -92,16 +92,16 @@ export function PartitionChip({ partition }: { partition: string }) {
 export function StatusDot({ status }: { status: string }) {
   const color =
     status === "completed"
-      ? "#2BB3A3"
+      ? "#4CC38A"
       : status === "running" || status === "cancelling" || status === "queued"
         ? "#E8A33D"
         : status === "failed"
           ? "#F2555A"
-          : "#5F6A7A";
+          : "#7E8899";
   return (
     <span className="inline-flex items-center gap-1.5 text-2xs font-medium capitalize" style={{ color }}>
       <span
-        className={clsx("h-1.5 w-1.5 rounded-full", (status === "running" || status === "queued") && "animate-pulse")}
+        className={clsx("h-1.5 w-1.5 rounded-full", status === "running" && "animate-pulse")}
         style={{ background: color }}
       />
       {status}
@@ -112,7 +112,7 @@ export function StatusDot({ status }: { status: string }) {
 export function Loading({ label = "Loading" }: { label?: string }) {
   return (
     <div className="flex items-center gap-2 py-8 text-xs text-fg-dim" role="status">
-      <Loader2 className="h-4 w-4 animate-spin text-teal" />
+      <Loader2 className="h-4 w-4 animate-spin text-fg-muted" />
       {label}…
     </div>
   );
@@ -141,12 +141,12 @@ export function Note({ children, tone = "info" }: { children: ReactNode; tone?: 
   const styles = {
     info: "border-line-strong bg-ink-750 text-fg-muted",
     warn: "border-cls-S/30 bg-cls-S/5 text-cls-S",
-    safety: "border-teal/25 bg-teal/5 text-fg-muted",
+    safety: "border-line-strong bg-ink-750 text-fg-muted",
   }[tone];
   const Icon = tone === "safety" ? ShieldAlert : tone === "warn" ? AlertTriangle : Info;
   return (
     <div className={clsx("flex items-start gap-2 rounded-lg border px-3 py-2 text-2xs leading-relaxed", styles)}>
-      <Icon className={clsx("mt-px h-3.5 w-3.5 shrink-0", tone === "safety" && "text-teal")} />
+      <Icon className={clsx("mt-px h-3.5 w-3.5 shrink-0", tone === "safety" && "text-fg")} />
       <div>{children}</div>
     </div>
   );
@@ -155,7 +155,7 @@ export function Note({ children, tone = "info" }: { children: ReactNode; tone?: 
 export function ResearchNotice() {
   return (
     <Note tone="safety">
-      <strong className="font-semibold text-fg">Research-model output.</strong> For education and research only — not a
+      <strong className="font-medium text-fg">Research-model output.</strong> For education and research only — not a
       medical device, not a diagnosis, and not a substitute for a clinician.
     </Note>
   );
@@ -165,7 +165,7 @@ export function PageHeader({ title, sub, actions }: { title: string; sub?: React
   return (
     <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight text-fg">{title}</h1>
+        <h1 className="text-xl font-medium text-fg">{title}</h1>
         {sub && <p className="mt-1 max-w-3xl text-xs leading-relaxed text-fg-muted">{sub}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
