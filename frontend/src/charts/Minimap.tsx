@@ -66,7 +66,8 @@ export default function Minimap({ t, min, max, duration, range, onJump, marks = 
       ctx.textBaseline = "bottom";
       for (let s = 0; s <= duration; s += 300) {
         const x = sx(s);
-        ctx.fillText(clock(s, 0), Math.min(x + 2, w - 28), height);
+        const label = clock(s, 0);
+        ctx.fillText(label, Math.min(x + 2, w - ctx.measureText(label).width - 2), height);
       }
     };
     draw();

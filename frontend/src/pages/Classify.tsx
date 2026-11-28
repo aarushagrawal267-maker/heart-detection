@@ -70,14 +70,14 @@ export default function Classify() {
   return (
     <div className="space-y-5">
       <PageHeader
-        title="Heartbeat Classification Centre"
+        title="Beat classification"
         sub="Run the project's trained 1D CNN on one expert-annotated beat, compare its output with the reference label and inspect which parts of the waveform influenced the score."
         actions={<RecordPicker value={record} onChange={setRecord} />}
       />
       <ResearchNotice />
       {model.isSuccess && !model.data && (
         <Note tone="warn">
-          No trained CNN is available. <Link to="/lab" className="underline">Train one in the Model Laboratory</Link> first.
+          No trained CNN is available. <Link to="/lab" className="link">Train one in the Model Laboratory</Link> first.
         </Note>
       )}
 

@@ -133,7 +133,7 @@ export function ScoreBars({ scores, highlight }: { scores: Record<string, number
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-ink-600">
             <div
-              className="h-full w-full origin-left rounded-full transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              className="h-full w-full origin-left transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
               style={{ transform: `scaleX(${Math.max(0, Math.min(1, v))})`, background: classColor(c), opacity: c === highlight ? 1 : 0.55 }}
             />
           </div>

@@ -18,6 +18,11 @@ body,
   height: 100%;
 }
 
+strong,
+b {
+  font-weight: 500;
+}
+
 body {
   @apply bg-ink-900 text-fg antialiased font-sans;
   font-feature-settings: "cv11", "ss01";
